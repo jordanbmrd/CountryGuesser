@@ -1,0 +1,14 @@
+.loginPaper {
+    padding: 20px;
+    width: 280px;
+    margin: 20px auto;
+}
+.loginGrid {
+    text-align: center;
+}
+.loginGrid h2 {
+    margin: 20px 0;
+}
+.loginSubmit {
+    margin: 15px 0 !important;
+}
