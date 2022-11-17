@@ -5,15 +5,15 @@ import { AiOutlineMenu } from "react-icons/ai";
 
 const pages = [
     {
-        name: 'Products',
+        name: 'Règles',
         link: '/'
     },
     {
-        name: 'Pricing',
+        name: 'Classement',
         link: '/'
     },
     {
-        name: 'Blog',
+        name: 'À propos',
         link: '/'
     }];
 const settings = ['Profil', 'Paramètres', 'Déconnexion'];
