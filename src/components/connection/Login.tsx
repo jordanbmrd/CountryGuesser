@@ -1,12 +1,13 @@
-import { Grid, Paper, Avatar, TextField, FormControlLabel, Checkbox, Button, Typography, Link } from "@mui/material";
+import { Grid, Paper, Avatar, TextField, FormControlLabel, Checkbox, Button, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 import { BsFillLockFill } from "react-icons/bs";
-import './Login.css';
+import './Connection.styles.css';
 
 const Login = () => {
   return (
     <Grid>
-        <Paper elevation={10} className="loginPaper">
-            <Grid className="loginGrid">
+        <Paper elevation={10} className="connectionPaper">
+            <Grid className="connectionGrid">
                 <Avatar sx={{ backgroundColor: '#1bbd7e', margin: 'auto' }}>
                     <BsFillLockFill />
                 </Avatar>
@@ -22,12 +23,12 @@ const Login = () => {
                         color="primary"
                     /> }
             />
-            <Button type="submit" color="primary" variant="contained" className="loginSubmit" fullWidth>Se connecter</Button>
-            <Typography>
-                <Link href="#">Mot de passe oublié ?</Link>
+            <Button type="submit" color="primary" variant="contained" className="connectionSubmit" fullWidth>Se connecter</Button>
+            <Typography sx={{ textAlign: "center" }}>
+                <Link to="/">Mot de passe oublié ?</Link>
             </Typography>
             <Typography>
-                Pas encore de compte ?<Link href="#">S'enregistrer</Link>
+                Pas encore de compte ?&nbsp;<Link to="/register">S'enregistrer</Link>
             </Typography>
         </Paper>
     </Grid>

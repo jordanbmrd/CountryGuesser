@@ -1,14 +1,14 @@
-.loginPaper {
+.connectionPaper {
     padding: 20px;
     width: 280px;
     margin: 20px auto;
 }
-.loginGrid {
+.connectionGrid {
     text-align: center;
 }
-.loginGrid h2 {
+.connectionGrid h2 {
     margin: 20px 0;
 }
-.loginSubmit {
+.connectionSubmit {
     margin: 15px 0 !important;
 }
