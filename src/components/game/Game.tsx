@@ -1,60 +1,103 @@
-import { useRef, useState, useEffect } from "react";
-import { Map, Popup } from "mapbox-gl";
-import { Typography } from "@mui/material";
-import './Game.styles.css';
+import { useState } from "react";
+import { Card, Grid, Box, Typography, Alert, Button } from "@mui/material";
+import Map from './Map';
+import WinnerDialog from './WinnerDialog';
+import LoadingBar from '../main/LoadingBar';
 
 const Game = () => {
-    const mapContainer = useRef(null);
-    const map: any = useRef(null);
-    const [lng, setLng] = useState(-70.9);
-    const [lat, setLat] = useState(42.35);
-    const [zoom, setZoom] = useState(9);
-    const [timer, setTimer] = useState(0);
+  const [mysteryCountry, setMysteryCountry] = useState({ name: "", flag: "", code: "" });
+  const [selectedCountry, setSelectedCountry] = useState({ name: "", code: "" });
+  const [canValidate, setCanValidate] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [timer, setTimer] = useState(0);
+  const [winnerDialogVisible, setWinnerDialogVisible] = useState(false); 
 
-    useEffect(() => {
-        if (map.current) return;
+  const handleMapLoaded = () => {
+    loadRandomCountry();
+    setIsLoading(false);
+  }
 
-        map.current = new Map({
-            container: mapContainer.current || "",
-            style: 'mapbox://styles/dorit75/clak5c76z005914o64jbe3you?optimize=true',
-            center: [lng, lat],
-            zoom,
-            accessToken: "pk.eyJ1IjoiZG9yaXQ3NSIsImEiOiJjbGFqdjU1bzYwZzBhM3NvMGJ0Z2M1a3F2In0.RddpBuye5jg57iGg25DQTA",
-        });
+  const loadRandomCountry = () => {
+    fetch("https://restcountries.com/v2/all")
+    .then(data => data.json())
+    .then(data => {
+      const randomCountry = data[Math.floor(Math.random() * data.length)];
 
-        //http://api.tiles.mapbox.com/v4/geocode/mapbox.places-country-v1/-73.989,40.733.json?access_token=pk.eyJ1IjoiZG9yaXQ3NSIsImEiOiJjbGFqdjU1bzYwZzBhM3NvMGJ0Z2M1a3F2In0.RddpBuye5jg57iGg25DQTA
+      console.log(randomCountry);
 
-        map.current.on('move', () => {
-            setLng(map.current.getCenter().lng.toFixed(4));
-            setLat(map.current.getCenter().lat.toFixed(4));
-            setZoom(map.current.getZoom().toFixed(2));
-        });
+      setMysteryCountry({
+        name: randomCountry.nativeName,
+        flag: randomCountry.flag,
+        code: randomCountry.alpha2Code.toUpperCase(),
+      })
+    });
+  }
 
-        map.current.on('click', (e: any) => {
-            const { lat, lng } = e.lngLat;
-            fetch(`http://api.tiles.mapbox.com/v4/geocode/mapbox.places-country-v1/${lng},${lat}.json?access_token=pk.eyJ1IjoiZG9yaXQ3NSIsImEiOiJjbGFqdjU1bzYwZzBhM3NvMGJ0Z2M1a3F2In0.RddpBuye5jg57iGg25DQTA&language=fr`)
-            .then(data => data.json())
-            .then(data => {
-                console.log(data);
-                const { place_name_fr } = data.features[0];
-                new Popup()
-                    .setLngLat(e.lngLat.wrap())
-                    .setHTML(place_name_fr)
-                    .addTo(map.current);
-            });
-            
-        });
-
-        const interval = setInterval(() => setTimer(timer => timer + 1), 1000);
-    }, []);
+  const handleValidateAnswer = () => {
+    console.log(selectedCountry, mysteryCountry);
+    if (selectedCountry.code === mysteryCountry.code) {
+      // Victoire
+      setWinnerDialogVisible(true);
+    }
+  }
 
   return (
-    <div>
-        <div className="sidebar">
-            <Typography fontSize={20}>Temps écoulé : { timer }s</Typography>
-        </div>
-        <div ref={mapContainer} className="map" />
-    </div>
+    <>
+      <WinnerDialog
+      open={winnerDialogVisible}
+      setOpen={setWinnerDialogVisible}
+      mysteryCountry={mysteryCountry}
+      timer={timer} />
+      <LoadingBar visible={isLoading} />
+      <Card sx={{ height: "90vh", margin: "30px" }}>
+        <Box sx={{ display: "flex" }}>
+          <Grid item xs={8} sx={{ mr: 5 }}>
+            <Map
+            selectedCountry={selectedCountry}
+            setSelectedCountry={setSelectedCountry}
+            setCanValidate={setCanValidate}
+            setTimer={setTimer}
+            onLoad={handleMapLoaded}
+            winnerDialogVisible={winnerDialogVisible} />
+          </Grid>
+          <Grid
+          item
+          spacing={2}
+          xs={3}
+          pt={5}
+          display="flex"
+          flexDirection="column"
+          justifyContent="space-between"
+          width="23vw">
+            <Grid item>
+              <Typography color="lightgray">À toi de jouer !</Typography>
+              <Typography variant="h3">Drapeau à trouver</Typography>
+              <Typography variant="h6">Temps : {timer}s</Typography>
+            </Grid>
+
+            { mysteryCountry.flag && (
+              <Grid item>
+                <img
+                alt="Drapeau"
+                src={ mysteryCountry.flag }
+                style={{ width: "90%" }} />
+              </Grid>
+            )}
+
+            <Grid item display="flex" flexDirection="column" alignItems="flex-end" sx={{ mr: 4 }}>
+              { selectedCountry && (
+                  <Alert severity="info">Vous êtes sur le point de valider votre réponse : <b>{ selectedCountry.name }</b></Alert>
+              )}
+              <Button
+              variant="contained"
+              disabled={ !canValidate }
+              sx={{ mb: 5, mt: 2, width: "fit-content" }}
+              onClick={handleValidateAnswer}>Confirmer ma réponse</Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </Card>
+    </>
   );
 }
 
