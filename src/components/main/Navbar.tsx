@@ -9,8 +9,8 @@ const pages = [
         link: '/'
     },
     {
-        name: 'Classement',
-        link: '/'
+        name: 'Classements',
+        link: '/leaderboards'
     },
     {
         name: 'À propos',
@@ -44,19 +44,14 @@ function Navbar() {
             <Typography
               variant="h6"
               noWrap
-              component="a"
-              href="/"
+              component={Link}
+              to="/"
               sx={{
-                mr: 2,
+                mr: 5,
                 display: { xs: 'none', md: 'flex' },
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
               }}
             >
-              LOGO
+              <img src="logo.png" alt="CountryGuesser Logo" width={150} />
             </Typography>
   
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -89,9 +84,9 @@ function Navbar() {
                 }}
               >
                 {pages.map((page, i) => (
-                  <Link to={page.link}>
-                    <MenuItem key={i} onClick={handleCloseNavMenu}>
-                        <Typography textAlign="center">
+                  <Link style={{ textDecoration: 'none' }} key={i} to={page.link}>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                        <Typography textAlign="center" color="black">
                             {page.name}
                         </Typography>
                     </MenuItem>
@@ -102,26 +97,20 @@ function Navbar() {
             <Typography
               variant="h5"
               noWrap
-              component="a"
-              href=""
+              component={Link}
+              to="/"
               sx={{
                 mr: 2,
                 display: { xs: 'flex', md: 'none' },
                 flexGrow: 1,
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
               }}
             >
-              LOGO
+              <img src="logo.png" alt="CountryGuesser Logo" width={150} />
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {pages.map((page, i) => (
-                <Link to={page.link}>
+                <Link style={{ textDecoration: 'none' }} key={i} to={page.link}>
                     <Button
-                    key={i}
                     onClick={handleCloseNavMenu}
                     sx={{ my: 2, color: 'white', display: 'block' }}
                     >

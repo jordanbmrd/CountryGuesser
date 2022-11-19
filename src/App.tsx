@@ -1,3 +1,4 @@
+import { useState } from "react";
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -8,8 +9,11 @@ import Login from './components/connection/Login';
 import Register from './components/connection/Register';
 import Dashboard from './components/dashboard/Dashboard';
 import Game from './components/game/Game';
+import Leaderboards from './components/leaderboards/Loaderboards';
 
 function App() {
+  const [connected, isConnected] = useState(false);
+
   return (
     <Router>
       <Routes>
@@ -17,6 +21,7 @@ function App() {
         <Route path="/login" element={ <Login /> } />
         <Route path="/register" element={ <Register /> } />
         <Route path="/game" element={ <Game /> } />
+        <Route path="/leaderboards" element={ <Leaderboards /> } />
       </Routes>
     </Router>
   );

@@ -4,7 +4,6 @@
   margin: 0;
   font-family: 'Roboto', sans-serif;
 }
-.map {
-  width: 100vw;
-  height: 100vh;
+body {
+  background-color: #efeff0;
 }

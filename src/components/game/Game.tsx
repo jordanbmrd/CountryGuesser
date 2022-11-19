@@ -2,15 +2,20 @@ import { useState } from "react";
 import { Card, Grid, Box, Typography, Alert, Button } from "@mui/material";
 import Map from './Map';
 import WinnerDialog from './WinnerDialog';
+import LoserDialog from './LoserDialog';
 import LoadingBar from '../main/LoadingBar';
 
 const Game = () => {
-  const [mysteryCountry, setMysteryCountry] = useState({ name: "", flag: "", code: "" });
+  const [mysteryCountry, setMysteryCountry] = useState({ name: "", flag: "", code: "", latLng: [] });
   const [selectedCountry, setSelectedCountry] = useState({ name: "", code: "" });
   const [canValidate, setCanValidate] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [timer, setTimer] = useState(0);
-  const [winnerDialogVisible, setWinnerDialogVisible] = useState(false); 
+  const [winnerDialogVisible, setWinnerDialogVisible] = useState(false);
+  const [loserDialogVisible, setLoserDialogVisible] = useState(false);
+  const [losedGame, setLosedGame] = useState(false);
+  const [leftClues, setLeftClues] = useState(0);  // Initialisé au chargement de la Map à 2
+  const [errors, setErrors] = useState(0);
 
   const handleMapLoaded = () => {
     loadRandomCountry();
@@ -18,51 +23,64 @@ const Game = () => {
   }
 
   const loadRandomCountry = () => {
-    fetch("https://restcountries.com/v2/all")
+    fetch("https://restcountries.com/v2/all/")
     .then(data => data.json())
     .then(data => {
       const randomCountry = data[Math.floor(Math.random() * data.length)];
 
-      console.log(randomCountry);
-
       setMysteryCountry({
-        name: randomCountry.nativeName,
+        name: randomCountry.translations.fr,
         flag: randomCountry.flag,
         code: randomCountry.alpha2Code.toUpperCase(),
+        latLng: randomCountry.latlng,
       })
     });
   }
 
   const handleValidateAnswer = () => {
-    console.log(selectedCountry, mysteryCountry);
     if (selectedCountry.code === mysteryCountry.code) {
-      // Victoire
+      // Bon pays validé
       setWinnerDialogVisible(true);
     }
+    else {
+      // Mauvais pays validé
+      setErrors(errors => errors + 1);
+    }
+  }
+
+  const handleLeave = () => {
+    setLosedGame(true);
   }
 
   return (
     <>
       <WinnerDialog
       open={winnerDialogVisible}
-      setOpen={setWinnerDialogVisible}
       mysteryCountry={mysteryCountry}
+      errors={errors}
       timer={timer} />
+      <LoserDialog
+      open={loserDialogVisible}
+      mysteryCountry={mysteryCountry} />
       <LoadingBar visible={isLoading} />
       <Card sx={{ height: "90vh", margin: "30px" }}>
         <Box sx={{ display: "flex" }}>
           <Grid item xs={8} sx={{ mr: 5 }}>
             <Map
+            losedGame={losedGame}
+            leftClues={leftClues}
+            mysteryCountry={mysteryCountry}
             selectedCountry={selectedCountry}
             setSelectedCountry={setSelectedCountry}
             setCanValidate={setCanValidate}
             setTimer={setTimer}
+            setLeftClues={setLeftClues}
             onLoad={handleMapLoaded}
-            winnerDialogVisible={winnerDialogVisible} />
+            winnerDialogVisible={winnerDialogVisible}
+            setLoserDialogVisible={setLoserDialogVisible} />
           </Grid>
           <Grid
           item
-          spacing={2}
           xs={3}
           pt={5}
           display="flex"
@@ -80,19 +98,29 @@ const Game = () => {
                 <img
                 alt="Drapeau"
                 src={ mysteryCountry.flag }
-                style={{ width: "90%" }} />
+                style={{ width: "90%", border: "1px solid lightgray" }} />
               </Grid>
             )}
 
             <Grid item display="flex" flexDirection="column" alignItems="flex-end" sx={{ mr: 4 }}>
-              { selectedCountry && (
+              { selectedCountry.name && (
                   <Alert severity="info">Vous êtes sur le point de valider votre réponse : <b>{ selectedCountry.name }</b></Alert>
               )}
-              <Button
-              variant="contained"
-              disabled={ !canValidate }
-              sx={{ mb: 5, mt: 2, width: "fit-content" }}
-              onClick={handleValidateAnswer}>Confirmer ma réponse</Button>
+
+              <Grid
+              container
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              sx={{ mb: 5, mt: 2 }}>
+                <Button variant="outlined" onClick={handleLeave}>
+                  Abandonner
+                </Button>
+                <Button
+                variant="contained"
+                disabled={ !canValidate }
+                onClick={handleValidateAnswer}>Confirmer ma réponse</Button>
+              </Grid>
             </Grid>
           </Grid>
         </Box>

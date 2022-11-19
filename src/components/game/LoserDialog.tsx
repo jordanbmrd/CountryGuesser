@@ -2,17 +2,6 @@ import { ReactElement, forwardRef, Ref } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide } from "@mui/material";
 import { TransitionProps } from '@mui/material/transitions';
 import { Link } from "react-router-dom";
-import Confetti from "react-confetti";
-
-const evalTime = (time: number) => {
-    const minutes = Math.floor(time / 60)
-    const seconds = time - minutes * 60;
-    
-    return {
-        minutes,
-        seconds
-    };
-}
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -23,16 +12,9 @@ const Transition = forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const WinnerDialog = (props: WinnerDialogProps) => {
-    const { name } = props.mysteryCountry;
-    const { minutes, seconds } = evalTime(props.timer);
-
+const LoserDialog = (props: LoserDialogProps) => {
   return (
     <>
-        <Confetti
-        width={window.innerWidth}
-        height={window.innerHeight}
-        style={{ zIndex: 1500, display: props.open ? "block" : "none" }} />
         <Dialog
         open={props.open}
         TransitionComponent={Transition}
@@ -40,16 +22,12 @@ const WinnerDialog = (props: WinnerDialogProps) => {
         aria-describedby="alert-dialog-slide-description"
         >
         <DialogContent sx={{ m: "auto" }}>
-            <img src="confettis.png" alt="Confettis" width="150" />
+            <img src="emoji.png" alt="Emoji" width="150" />
         </DialogContent>
         <DialogTitle>
-            Bravo ! Vous avez gagné la partie !<br />
-            Le pays était : <b>{ name && name }</b><br />
-            Temps passé : <b>{ minutes }min { seconds }s</b><br />
-            { props.errors > 0 ?
-              <>Erreurs : <b>{ props.errors }</b></> :
-              <>Aucune erreur !</>
-            }
+            Vous avez abandonné mais pas de panique !<br />
+            Vous ferez mieux la prochaine fois.<br />
+            La réponse était : <b>{ props.mysteryCountry.name }</b>
         </DialogTitle>
         <DialogActions>
             <Link style={{ textDecoration: 'none' }} to="/">
@@ -64,11 +42,9 @@ const WinnerDialog = (props: WinnerDialogProps) => {
   );
 }
 
-interface WinnerDialogProps {
+interface LoserDialogProps {
     open: boolean;
     mysteryCountry: { name: string, flag: string, code: string, latLng: number[] };
-    errors: number;
-    timer: number;
 }
 
-export default WinnerDialog;
+export default LoserDialog;
