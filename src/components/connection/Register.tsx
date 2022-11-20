@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Grid, Paper, Avatar, TextField, Button, Typography, FormControl } from "@mui/material";
+import { Grid, Paper, Avatar, TextField, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { BsFillLockFill } from "react-icons/bs";
 import './Connection.styles.css';
@@ -17,7 +17,17 @@ const Register = () => {
 
     const handleSubmit = (e: any): void => {
         e.preventDefault();
-        console.log(formValues);
+
+        fetch("http://localhost:8888/countryguesser-backend/register.php", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formValues),
+        })
+        .then(data => console.log(data.text()))
+        .catch(err => console.log(err));
     }
 
   return (

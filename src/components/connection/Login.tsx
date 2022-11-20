@@ -25,7 +25,17 @@ const Login = () => {
 
     const handleSubmit = (e: any): void => {
         e.preventDefault();
-        console.log(formValues);
+
+        fetch("http://localhost:8888/countryguesser-backend/login.php", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formValues),
+        })
+        .then(data => console.log(data.text()))
+        .catch(err => console.log(err));
     }
 
   return (

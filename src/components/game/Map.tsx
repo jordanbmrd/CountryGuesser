@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, Dispatch, SetStateAction } from "react";
-import { LngLatBounds, Map as Mapbox, Popup } from "mapbox-gl";
+import { Map as Mapbox, Popup } from "mapbox-gl";
 import { Paper, Button } from "@mui/material";
-import { point, circle } from "@turf/turf";
+import { circle } from "@turf/turf";
 
 const displayCircle = (map: any, lat: number, lng: number, precision: number) => {
     // precision : 3 = Peu précis / 2 = Précis / 1 = Très précis
@@ -65,6 +65,8 @@ const Map = (props: MapProps) => {
     const [lng, setLng] = useState(2.00);
     const [lat, setLat] = useState(40.00);
     const [zoom, setZoom] = useState(1);
+
+    // eslint-disable-next-line
     const [timerInterval, setTimerInterval] = useState<any>(null);
 
     useEffect(() => {

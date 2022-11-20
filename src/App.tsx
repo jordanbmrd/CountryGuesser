@@ -1,4 +1,3 @@
-import { useState } from "react";
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -12,8 +11,6 @@ import Game from './components/game/Game';
 import Leaderboards from './components/leaderboards/Loaderboards';
 
 function App() {
-  const [connected, isConnected] = useState(false);
-
   return (
     <Router>
       <Routes>
