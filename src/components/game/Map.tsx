@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Map as Mapbox, Popup } from "mapbox-gl";
-import { Paper, Button } from "@mui/material";
+import { Paper, Button, Box } from "@mui/material";
 import { circle } from "@turf/turf";
 
 const displayCircle = (map: any, lat: number, lng: number, precision: number) => {
@@ -162,7 +162,7 @@ const Map = (props: MapProps) => {
     }
 
   return (
-    <div style={{ position: "relative", width: "70vw", height: "90vh" }}>
+    <Box sx={{ position: "relative", width: "70vw", height: "90vh" }}>
         { props.leftClues > 0 &&
             <Button
             sx={{ position: "absolute", zIndex: 3, top: 0, left: 0, margin: 3 }}
@@ -177,7 +177,7 @@ const Map = (props: MapProps) => {
             </Paper>
         )}
         <div ref={mapContainer} style={{ width: "100%", height: "90vh" }} />
-    </div>
+    </Box>
   );
 }
 
@@ -192,7 +192,7 @@ interface MapProps {
     setTimer: Dispatch<SetStateAction<number>>;
     setLeftClues: Dispatch<SetStateAction<number>>;
     setLoserDialogVisible: Dispatch<SetStateAction<boolean>>;
-    onLoad?: () => void;
+    onLoad: () => void;
 }
 
 export default Map;

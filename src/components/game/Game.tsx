@@ -66,11 +66,14 @@ const Game = () => {
       open={loserDialogVisible}
       mysteryCountry={mysteryCountry} />
       <LoadingBar visible={isLoading} />
-      <Card
-      sx={{ height: "90vh", margin: "30px" }}
+
+      <Box
+      sx={{ height: "90vh", margin: "30px", borderRadius: 2, bgcolor: "white" }}
+      overflow="hidden"
       className={ shake ? 'shake' : '' }
       onAnimationEnd={() => setShake(false)}>
-        <Stack direction="row">
+        <Stack
+        direction="row">
           <Box mr={5}>
             <Map
             losedGame={losedGame}
@@ -88,46 +91,50 @@ const Game = () => {
           <Stack
           pt={5}
           direction="column"
-          justifyContent="space-between">
-            <Grid item>
+          justifyContent="space-between"
+          overflow="scroll">
+            <Box>
               <Typography color="lightgray">À toi de jouer !</Typography>
               <Typography variant="h3">Drapeau à trouver</Typography>
               <Typography variant="h6">Temps : {timer}s</Typography>
               { errors ? <Typography variant="h6">Erreurs : {errors}</Typography> : null }
-            </Grid>
+            </Box>
 
             { mysteryCountry.flag && (
-              <Grid item>
+              <Box>
                 <img
                 alt="Drapeau"
                 src={ mysteryCountry.flag }
                 style={{ width: "90%", border: "1px solid lightgray" }} />
-              </Grid>
+              </Box>
             )}
 
-            <Grid item display="flex" flexDirection="column" alignItems="flex-end" sx={{ mr: 4 }}>
+            <Stack direction="column" alignItems="flex-end" mr={4}>
               { selectedCountry.name && (
                   <Alert severity="info">Vous êtes sur le point de valider votre réponse : <b>{ selectedCountry.name }</b></Alert>
               )}
 
-              <Grid
-              container
-              display="flex"
+              <Stack
+              direction="row"
               alignItems="center"
               justifyContent="space-between"
-              sx={{ mb: 5, mt: 2 }}>
-                <Button variant="outlined" onClick={handleLeave}>
+              flexWrap="wrap"
+              mt={2}
+              mb={5}>
+                <Button
+                variant="outlined"
+                onClick={handleLeave}>
                   Abandonner
                 </Button>
                 <Button
                 variant="contained"
                 disabled={ !canValidate }
                 onClick={handleValidateAnswer}>Confirmer ma réponse</Button>
-              </Grid>
-            </Grid>
+              </Stack>
+            </Stack>
           </Stack>
         </Stack>
-      </Card>
+      </Box>
     </>
   );
 }
