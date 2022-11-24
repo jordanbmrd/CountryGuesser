@@ -68,7 +68,7 @@ const Game = () => {
       <LoadingBar visible={isLoading} />
 
       <Box
-      sx={{ height: "90vh", margin: "30px", borderRadius: 2, bgcolor: "white" }}
+      sx={{ height: "90vh", margin: "30px", borderRadius: 5, bgcolor: "white" }}
       overflow="hidden"
       className={ shake ? 'shake' : '' }
       onAnimationEnd={() => setShake(false)}>
