@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Card, Grid, Box, Typography, Alert, Button } from "@mui/material";
+import { Card, Grid, Box, Typography, Alert, Button, Stack } from "@mui/material";
 import Map from './Map';
 import WinnerDialog from './WinnerDialog';
 import LoserDialog from './LoserDialog';
 import LoadingBar from '../main/LoadingBar';
+import '../../animations/shake.animation.css';
 
 const Game = () => {
   const [mysteryCountry, setMysteryCountry] = useState({ name: "", flag: "", code: "", latLng: [] });
@@ -16,6 +17,7 @@ const Game = () => {
   const [losedGame, setLosedGame] = useState(false);
   const [leftClues, setLeftClues] = useState(0);  // Initialisé au chargement de la Map à 2
   const [errors, setErrors] = useState(0);
+  const [shake, setShake] = useState(false);
 
   const handleMapLoaded = () => {
     loadRandomCountry();
@@ -45,6 +47,7 @@ const Game = () => {
     else {
       // Mauvais pays validé
       setErrors(errors => errors + 1);
+      setShake(true);
     }
   }
 
@@ -63,9 +66,12 @@ const Game = () => {
       open={loserDialogVisible}
       mysteryCountry={mysteryCountry} />
       <LoadingBar visible={isLoading} />
-      <Card sx={{ height: "90vh", margin: "30px" }}>
-        <Box sx={{ display: "flex" }}>
-          <Grid item xs={8} sx={{ mr: 5 }}>
+      <Card
+      sx={{ height: "90vh", margin: "30px" }}
+      className={ shake ? 'shake' : '' }
+      onAnimationEnd={() => setShake(false)}>
+        <Stack direction="row">
+          <Box mr={5}>
             <Map
             losedGame={losedGame}
             leftClues={leftClues}
@@ -78,19 +84,16 @@ const Game = () => {
             onLoad={handleMapLoaded}
             winnerDialogVisible={winnerDialogVisible}
             setLoserDialogVisible={setLoserDialogVisible} />
-          </Grid>
-          <Grid
-          item
-          xs={3}
+          </Box>
+          <Stack
           pt={5}
-          display="flex"
-          flexDirection="column"
-          justifyContent="space-between"
-          width="23vw">
+          direction="column"
+          justifyContent="space-between">
             <Grid item>
               <Typography color="lightgray">À toi de jouer !</Typography>
               <Typography variant="h3">Drapeau à trouver</Typography>
               <Typography variant="h6">Temps : {timer}s</Typography>
+              { errors ? <Typography variant="h6">Erreurs : {errors}</Typography> : null }
             </Grid>
 
             { mysteryCountry.flag && (
@@ -122,8 +125,8 @@ const Game = () => {
                 onClick={handleValidateAnswer}>Confirmer ma réponse</Button>
               </Grid>
             </Grid>
-          </Grid>
-        </Box>
+          </Stack>
+        </Stack>
       </Card>
     </>
   );
