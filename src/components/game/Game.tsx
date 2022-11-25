@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Card, Grid, Box, Typography, Alert, Button, Stack } from "@mui/material";
+import { useState, useReducer } from "react";
+import { Box, Typography, Alert, Button, Stack } from "@mui/material";
 import Map from './Map';
 import WinnerDialog from './WinnerDialog';
 import LoserDialog from './LoserDialog';
 import LoadingBar from '../main/LoadingBar';
+import { secondsToTime } from "../../utils/time.utils";
 import '../../animations/shake.animation.css';
 
 const Game = () => {
@@ -15,7 +16,7 @@ const Game = () => {
   const [winnerDialogVisible, setWinnerDialogVisible] = useState(false);
   const [loserDialogVisible, setLoserDialogVisible] = useState(false);
   const [losedGame, setLosedGame] = useState(false);
-  const [leftClues, setLeftClues] = useState(0);  // Initialisé au chargement de la Map à 2
+  const [leftClues, setLeftClues] = useState(0);  // Initialisé au chargement de la Map à 3
   const [errors, setErrors] = useState(0);
   const [shake, setShake] = useState(false);
 
@@ -55,13 +56,20 @@ const Game = () => {
     setLosedGame(true);
   }
 
+  const handleReplay = () => {
+    // TODO: Réinitialiser tous les states à 0, y compris ceux de map
+    // Solution temporaire
+    window.location.reload();
+  }
+
   return (
     <>
       <WinnerDialog
       open={winnerDialogVisible}
       mysteryCountry={mysteryCountry}
       errors={errors}
-      timer={timer} />
+      timer={timer}
+      onReplay={handleReplay} />
       <LoserDialog
       open={loserDialogVisible}
       mysteryCountry={mysteryCountry} />
@@ -96,7 +104,7 @@ const Game = () => {
             <Box>
               <Typography color="lightgray">À toi de jouer !</Typography>
               <Typography variant="h3">Drapeau à trouver</Typography>
-              <Typography variant="h6">Temps : {timer}s</Typography>
+              <Typography variant="h6">Temps : {secondsToTime(timer)}s</Typography>
               { errors ? <Typography variant="h6">Erreurs : {errors}</Typography> : null }
             </Box>
 

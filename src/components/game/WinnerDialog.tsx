@@ -2,17 +2,8 @@ import { ReactElement, forwardRef, Ref } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide } from "@mui/material";
 import { TransitionProps } from '@mui/material/transitions';
 import { Link } from "react-router-dom";
+import { secondsToTime } from '../../utils/time.utils';
 import Confetti from "react-confetti";
-
-const evalTime = (time: number) => {
-    const minutes = Math.floor(time / 60)
-    const seconds = time - minutes * 60;
-    
-    return {
-        minutes,
-        seconds
-    };
-}
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -25,7 +16,6 @@ const Transition = forwardRef(function Transition(
 
 const WinnerDialog = (props: WinnerDialogProps) => {
     const { name } = props.mysteryCountry;
-    const { minutes, seconds } = evalTime(props.timer);
 
   return (
     <>
@@ -45,7 +35,7 @@ const WinnerDialog = (props: WinnerDialogProps) => {
         <DialogTitle>
             Bravo ! Vous avez gagné la partie !<br />
             Le pays était : <b>{ name && name }</b><br />
-            Temps passé : <b>{ minutes }min { seconds }s</b><br />
+            Temps passé : <b>{ secondsToTime(props.timer) }s</b><br />
             { props.errors > 0 ?
               <>Erreurs : <b>{ props.errors }</b></> :
               <>Aucune erreur !</>
@@ -56,7 +46,7 @@ const WinnerDialog = (props: WinnerDialogProps) => {
                 <Button>Revenir à l'accueil</Button>
             </Link>
             <Link style={{ textDecoration: 'none' }} to="/game">
-                <Button variant="contained">Rejouer</Button>
+                <Button onClick={props.onReplay}  variant="contained">Rejouer</Button>
             </Link>
         </DialogActions>
         </Dialog>
@@ -69,6 +59,7 @@ interface WinnerDialogProps {
     mysteryCountry: { name: string, flag: string, code: string, latLng: number[] };
     errors: number;
     timer: number;
+    onReplay: () => void;
 }
 
 export default WinnerDialog;
