@@ -66,8 +66,7 @@ const Map = (props: MapProps) => {
     const [lat, setLat] = useState(40.00);
     const [zoom, setZoom] = useState(1);
 
-    // eslint-disable-next-line
-    const [timerInterval, setTimerInterval] = useState<any>(null);
+    const [, setTimerInterval] = useState<any>(null);
 
     useEffect(() => {
         if (map.current) return;

@@ -1,4 +1,4 @@
-import { useState, useReducer } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, Alert, Button, Stack } from "@mui/material";
 import Map from './Map';
 import WinnerDialog from './WinnerDialog';
@@ -19,6 +19,10 @@ const Game = () => {
   const [leftClues, setLeftClues] = useState(0);  // Initialisé au chargement de la Map à 3
   const [errors, setErrors] = useState(0);
   const [shake, setShake] = useState(false);
+
+  useEffect(() => {
+    document.body.style.backgroundColor = "#efeff0";
+  }, []);
 
   const handleMapLoaded = () => {
     loadRandomCountry();
@@ -100,7 +104,7 @@ const Game = () => {
           pt={5}
           direction="column"
           justifyContent="space-between"
-          overflow="scroll">
+          overflow="hidden">
             <Box>
               <Typography color="lightgray">À toi de jouer !</Typography>
               <Typography variant="h3">Drapeau à trouver</Typography>
@@ -125,8 +129,9 @@ const Game = () => {
               <Stack
               direction="row"
               alignItems="center"
-              justifyContent="space-between"
+              justifyContent="space-around"
               flexWrap="wrap"
+              width="100%"
               mt={2}
               mb={5}>
                 <Button
