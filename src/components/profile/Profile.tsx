@@ -48,27 +48,15 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
   );
 }
 
-export default function CustomizedDialogs() {
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-
+const Profile = (props: ProfileDialogProps) => {
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open dialog
-      </Button>
       <BootstrapDialog
-        onClose={handleClose}
+        onClose={props.handleClose}
         aria-labelledby="customized-dialog-title"
-        open={open}
+        open={props.open}
       >
-        <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
+        <BootstrapDialogTitle id="customized-dialog-title" onClose={props.handleClose}>
           Modal title
         </BootstrapDialogTitle>
         <DialogContent dividers>
@@ -88,7 +76,7 @@ export default function CustomizedDialogs() {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose}>
+          <Button autoFocus onClick={props.handleClose}>
             Save changes
           </Button>
         </DialogActions>
@@ -96,3 +84,10 @@ export default function CustomizedDialogs() {
     </div>
   );
 }
+
+interface ProfileDialogProps {
+  handleClose: () => void;
+  open: boolean;
+}
+
+export default Profile;
