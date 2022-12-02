@@ -2,7 +2,8 @@ import { useState, MouseEvent } from "react";
 import { AppBar, Box, Toolbar, MenuItem, Button, Avatar, Container, Menu, Typography, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 import { AiOutlineMenu } from "react-icons/ai";
-import Profile from "../user/Profile";
+import ProfileDialog from "../user/ProfileDialog";
+import ParametersDialog from "../user/ParametersDialog";
 
 const pages = [
     {
@@ -59,12 +60,21 @@ function Navbar() {
       setAnchorElUser(null);
       setShowProfile(false);
     }
+
+    const handleCloseParametersDialog = () => {
+      setAnchorElUser(null);
+      setShowParameters(false);
+    }
   
     return (
       <>
-        <Profile
+        <ProfileDialog
         open={showProfile}
         handleClose={handleCloseProfileDialog} />
+
+        <ParametersDialog
+        open={showParameters}
+        handleClose={handleCloseParametersDialog} />
 
         <AppBar position="static" sx={{ backgroundColor: "transparent" }}>
           <Container maxWidth="xl">
@@ -169,7 +179,7 @@ function Navbar() {
                   onClose={handleCloseUserMenu}
                 >
                   {settings.map((setting, i) => (
-                    <MenuItem key={i} onClick={setting.action}>
+                    <MenuItem autoFocus={false} key={i} onClick={setting.action}>
                       <Typography textAlign="center">{setting.name}</Typography>
                     </MenuItem>
                   ))}

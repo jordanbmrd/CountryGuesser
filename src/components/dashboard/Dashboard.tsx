@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import { BsFillPersonFill } from 'react-icons/bs';
 import { HiUserGroup } from 'react-icons/hi';
@@ -6,6 +7,9 @@ import Navbar from "../main/Navbar";
 import "./Dashboard.styles.css";
 
 const Dashboard = () => {
+  // Changement de la couleur de fond
+  useEffect(() => {document.body.style.backgroundColor = "black"}, []);
+
   return (
     <>
         <Navbar />

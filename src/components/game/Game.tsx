@@ -4,6 +4,7 @@ import Map from './Map';
 import WinnerDialog from './WinnerDialog';
 import LoserDialog from './LoserDialog';
 import LoadingBar from '../main/LoadingBar';
+import Loader from "../main/Loader";
 import { secondsToTime } from "../../utils/time.utils";
 import '../../animations/shake.animation.css';
 
@@ -19,6 +20,9 @@ const Game = () => {
   const [leftClues, setLeftClues] = useState(0);  // Initialisé au chargement de la Map à 3
   const [errors, setErrors] = useState(0);
   const [shake, setShake] = useState(false);
+
+  // Changement de la couleur de fond
+  useEffect(() => {document.body.style.backgroundColor = "#efeff0"}, []);
 
   const handleMapLoaded = () => {
     loadRandomCountry();
@@ -108,13 +112,15 @@ const Game = () => {
               { errors ? <Typography variant="h6">Erreurs : {errors}</Typography> : null }
             </Box>
 
-            { mysteryCountry.flag && (
+            { mysteryCountry.flag ? (
               <Box>
                 <img
                 alt="Drapeau"
                 src={ mysteryCountry.flag }
                 style={{ width: "90%", border: "1px solid lightgray" }} />
               </Box>
+            ) : (
+              <Loader />
             )}
 
             <Stack direction="column" alignItems="flex-end" mr={4}>

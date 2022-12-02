@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Container, Typography } from "@mui/material";
 import Board from './Board';
 import Navbar from '../main/Navbar';
@@ -20,6 +21,9 @@ const createData = (
   ];
 
 const Leaderboards = () => {
+  // Changement de la couleur de fond
+  useEffect(() => {document.body.style.backgroundColor = "black"}, []);
+
   return (
     <>
         <Navbar />
