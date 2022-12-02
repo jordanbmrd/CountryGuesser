@@ -54,12 +54,17 @@ function Navbar() {
     const handleCloseUserMenu = () => {
       setAnchorElUser(null);
     };
+
+    const handleCloseProfileDialog = () => {
+      setAnchorElUser(null);
+      setShowProfile(false);
+    }
   
     return (
       <>
         <Profile
         open={showProfile}
-        handleClose={() => setShowProfile(false)} />
+        handleClose={handleCloseProfileDialog} />
 
         <AppBar position="static" sx={{ backgroundColor: "transparent" }}>
           <Container maxWidth="xl">
