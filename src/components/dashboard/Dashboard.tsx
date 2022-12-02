@@ -1,5 +1,4 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { useEffect } from "react";
 import { BsFillPersonFill } from 'react-icons/bs';
 import { HiUserGroup } from 'react-icons/hi';
 import { Link } from "react-router-dom";
@@ -7,10 +6,6 @@ import Navbar from "../main/Navbar";
 import "./Dashboard.styles.css";
 
 const Dashboard = () => {
-  useEffect(() => {
-    document.body.style.backgroundColor = "black";
-  }, []);
-
   return (
     <>
         <Navbar />

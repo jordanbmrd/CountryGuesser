@@ -1,16 +1,20 @@
 import './App.css';
+import { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
-  Route
+  Route,
+  useLocation,
 } from "react-router-dom";
 import Login from './components/authentification/Login';
 import Register from './components/authentification/Register';
 import Dashboard from './components/dashboard/Dashboard';
 import Game from './components/game/Game';
-import Leaderboards from './components/leaderboards/Loaderboards';
+import Leaderboards from './components/leaderboards/Leaderboards';
 
 function App() {
+  
+
   return (
     <Router>
       <Routes>
@@ -20,8 +24,18 @@ function App() {
         <Route path="/game" element={ <Game /> } />
         <Route path="/leaderboards" element={ <Leaderboards /> } />
       </Routes>
+      <SetBackground />
     </Router>
   );
+}
+
+const SetBackground = () => {
+  const location = useLocation();
+  useEffect(() => {
+    document.body.style.backgroundColor = location.pathname != '/game' ? "black !important" : "#efeff0";
+  }, [location.pathname]);
+
+  return null;
 }
 
 export default App;

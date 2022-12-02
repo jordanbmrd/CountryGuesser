@@ -20,10 +20,6 @@ const Game = () => {
   const [errors, setErrors] = useState(0);
   const [shake, setShake] = useState(false);
 
-  useEffect(() => {
-    document.body.style.backgroundColor = "#efeff0";
-  }, []);
-
   const handleMapLoaded = () => {
     loadRandomCountry();
     setIsLoading(false);

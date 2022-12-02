@@ -1,6 +1,7 @@
 import { Container, Typography } from "@mui/material";
 import Board from './Board';
 import Navbar from '../main/Navbar';
+import FabMenu from "../main/FabMenu";
 
 const createData = (
     name: string,
@@ -18,18 +19,20 @@ const createData = (
     createData('Gingerbread', 356, 16.0),
   ];
 
-const Loaderboards = () => {
+const Leaderboards = () => {
   return (
     <>
         <Navbar />
-        <Container sx={{ mb: 10 }}>
-            <Typography variant="h4" mb={3} mt={5}>Classement - Mode 1 joueur</Typography>
+        <Container sx={{ mb: 10, width: 1000 }}>
+            <Typography color="white" variant="h4" mb={3} mt={5}>Classement - Mode 1 joueur</Typography>
             <Board rows={rows} />
-            <Typography variant="h4" mb={3} mt={5}>Classement - Mode 2 joueurs</Typography>
+            <Typography color="white" variant="h4" mb={3} mt={5}>Classement - Mode 2 joueurs</Typography>
             <Board rows={rows} />
         </Container>
+
+        <FabMenu />
     </>
   );
 }
 
-export default Loaderboards;
+export default Leaderboards;

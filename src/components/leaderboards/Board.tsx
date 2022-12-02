@@ -5,7 +5,7 @@ const Board = (props: BoardProps): JSX.Element => {
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
-          <TableRow sx={{ bgcolor: "orange" }}>
+          <TableRow sx={{ bgcolor: "#4BA89C" }}>
             <TableCell sx={{ fontWeight: "bold" }}>Nom du joueur</TableCell>
             <TableCell align="right" sx={{ fontWeight: "bold" }}>Parties gagnées</TableCell>
             <TableCell align="right" sx={{ fontWeight: "bold" }}>Ratio (G/P)</TableCell>
