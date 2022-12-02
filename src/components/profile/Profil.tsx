@@ -41,7 +41,7 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <CloseIcon />
+          <AiFillCloseCircle />
         </IconButton>
       ) : null}
     </DialogTitle>
