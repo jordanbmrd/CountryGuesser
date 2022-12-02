@@ -2,7 +2,7 @@ import { useState, MouseEvent } from "react";
 import { AppBar, Box, Toolbar, MenuItem, Button, Avatar, Container, Menu, Typography, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 import { AiOutlineMenu } from "react-icons/ai";
-import Profile from "../profile/Profile";
+import Profile from "../user/Profile";
 
 const pages = [
     {
