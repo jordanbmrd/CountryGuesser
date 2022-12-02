@@ -1,5 +1,5 @@
 import './App.css';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -13,7 +13,7 @@ import Game from './components/game/Game';
 import Leaderboards from './components/leaderboards/Leaderboards';
 
 function App() {
-  
+  const [user, setUser] = useState({ username: "dorit75", email: "dorit75@gmail.com", date: "02/12/2022" });
 
   return (
     <Router>
@@ -32,7 +32,9 @@ function App() {
 const SetBackground = () => {
   const location = useLocation();
   useEffect(() => {
-    document.body.style.backgroundColor = location.pathname != '/game' ? "black !important" : "#efeff0";
+    document.body.style.backgroundColor = location.pathname !== '/game' ? "black !important" : "#efeff0 !important";
+    console.log(location.pathname);
+    console.log(document.body.style.backgroundColor);
   }, [location.pathname]);
 
   return null;
