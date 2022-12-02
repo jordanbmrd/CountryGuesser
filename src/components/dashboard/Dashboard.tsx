@@ -16,21 +16,32 @@ const Dashboard = () => {
         <Navbar />
 
         <Stack
-        flexDirection="column"
-        justifyContent="space-around"
-        sx={{ zIndex: 2, position: "absolute", bottom: 100, right: 100, width: 200 }}>
-          <Link style={{ textDecoration: "none" }} to="/game">
-            <Typography align="center" className="play-btn">
-              <BsFillPersonFill /><br />
-              1 joueur
-            </Typography>
-          </Link>
-          <Link style={{ textDecoration: "none" }} to="/game">
-            <Typography align="center" className="play-btn">
-              <HiUserGroup /><br />
-              2 joueurs
-            </Typography>
-          </Link>
+        alignItems="center"
+        width="100%"
+        sx={{ zIndex: 2, position: "absolute", bottom: 50 }}>
+          <Typography
+          variant="h5"
+          color="white"
+          mb={2}
+          fontFamily="'Oswald', sans-serif">Lancer une partie</Typography>
+          <Stack
+          flexDirection="row"
+          justifyContent="space-around"
+          alignItems="center"
+          sx={{ width: 500 }}>
+            <Link style={{ textDecoration: "none" }} to="/game">
+              <Typography align="center" className="play-btn">
+                <BsFillPersonFill />&nbsp;
+                1 joueur
+              </Typography>
+            </Link>
+            <Link style={{ textDecoration: "none" }} to="/game">
+              <Typography align="center" className="play-btn">
+                <HiUserGroup />&nbsp;
+                2 joueurs
+              </Typography>
+            </Link>
+          </Stack>
         </Stack>
 
         <Box sx={{ position: "fixed", width: "100vw" }}>

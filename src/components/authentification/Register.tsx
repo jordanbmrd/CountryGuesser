@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Grid, Paper, Avatar, TextField, FormControlLabel, Checkbox, Button, Typography } from "@mui/material";
+import { Grid, Paper, Avatar, TextField, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { BsFillLockFill } from "react-icons/bs";
-import './Connection.styles.css';
+import './Authentification.styles.css';
 
-const Login = () => {
-    const [formValues, setFormValues] = useState({ username: "", password: "", rememberMe: false });
+const Register = () => {
+    const [formValues, setFormValues] = useState({ username: "", email: "", password: "", confirmPassword: "" });
 
     const handleInputChange = (e: any): void => {
         const { name, value } = e.target;
@@ -15,18 +15,10 @@ const Login = () => {
         });
     }
 
-    const handleCheckboxChange = (e: any): void => {
-        const { name, checked } = e.target;
-        setFormValues({
-            ...formValues,
-            [name]: checked,
-        });
-    }
-
     const handleSubmit = (e: any): void => {
         e.preventDefault();
 
-        fetch("http://localhost:8888/countryguesser-backend/login.php", {
+        fetch("http://localhost:8888/countryguesser-backend/register.php", {
             method: "POST",
             headers: {
                 "Accept": "application/json",
@@ -49,31 +41,20 @@ const Login = () => {
             </Grid>
             
             <Grid item>
-                <Paper elevation={10} className="connectionPaper">
+                <Paper elevation={5} sx={{ borderRadius: 3 }} className="connectionPaper">
                     <Grid className="connectionGrid">
                         <Avatar sx={{ backgroundColor: '#1bbd7e', margin: 'auto' }}>
                             <BsFillLockFill />
                         </Avatar>
-                        <h2>Se connecter</h2>
+                        <h2>Créer mon compte</h2>
                     </Grid>
                     <TextField value={formValues.username} onChange={handleInputChange} name="username" sx={{ mt: 1, mb: 1 }} label="Nom d'utilisateur" placeholder="Entrez votre nom d'utilisateur" fullWidth required />
+                    <TextField value={formValues.email} onChange={handleInputChange} name="email" sx={{ mb: 1 }} label="Email" placeholder="Entrez votre email" fullWidth required />
                     <TextField value={formValues.password} onChange={handleInputChange} name="password" sx={{ mb: 1 }} label="Mot de passe" placeholder="Entrez votre mot de passe" type="password" fullWidth required />
-                    <FormControlLabel
-                        label="Se souvenir de moi"
-                        control={
-                            <Checkbox
-                                checked={formValues.rememberMe}
-                                onChange={handleCheckboxChange}
-                                name="rememberMe"
-                                color="primary"
-                            /> }
-                    />
-                    <Button type="submit" color="primary" variant="contained" className="connectionSubmit" fullWidth>Se connecter</Button>
-                    <Typography sx={{ textAlign: "center" }}>
-                        <Link style={{ textDecoration: 'none' }} to="/">Mot de passe oublié ?</Link>
-                    </Typography>
+                    <TextField value={formValues.confirmPassword} onChange={handleInputChange} name="confirmPassword" sx={{ mb: 1 }} label="Confirmer mot de passe" placeholder="Confirmez votre mot de passe" type="password" fullWidth required />
+                    <Button type="submit" color="primary" variant="contained" className="connectionSubmit" fullWidth>Créer</Button>
                     <Typography>
-                        Pas encore de compte ?&nbsp;<Link style={{ textDecoration: 'none' }} to="/register">S'enregistrer</Link>
+                        Déjà inscrit ?&nbsp;<Link style={{ textDecoration: 'none' }} to="/login">Se connecter</Link>
                     </Typography>
                 </Paper>
             </Grid>
@@ -82,4 +63,4 @@ const Login = () => {
   )
 }
 
-export default Login;
+export default Register

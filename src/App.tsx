@@ -4,8 +4,8 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-import Login from './components/connection/Login';
-import Register from './components/connection/Register';
+import Login from './components/authentification/Login';
+import Register from './components/authentification/Register';
 import Dashboard from './components/dashboard/Dashboard';
 import Game from './components/game/Game';
 import Leaderboards from './components/leaderboards/Loaderboards';

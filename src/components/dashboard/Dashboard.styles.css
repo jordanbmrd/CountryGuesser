@@ -5,6 +5,7 @@
     border: 1px solid white;
     color: white;
     font-size: 1.4rem !important;
+    width: 200px
 }
 .play-btn:hover {
     background-color: white;
