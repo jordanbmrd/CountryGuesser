@@ -1,7 +1,7 @@
 :root {
     --start-position: 110%;
     --end-position: -50%;
-    --animation-duration: 10s;
+    --animation-duration: 15s;
 }
 
 @keyframes credits {

@@ -1,7 +1,9 @@
-import { useState, MouseEvent } from "react";
+import { useState, useContext, MouseEvent, useEffect } from "react";
 import { AppBar, Box, Toolbar, MenuItem, Button, Avatar, Container, Menu, Typography, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 import { AiOutlineMenu } from "react-icons/ai";
+import { isAuthenticated } from "../../services/AuthService";
+import UserContext from "../../services/UserContext";
 import ProfileDialog from "../user/ProfileDialog";
 import ParametersDialog from "../user/ParametersDialog";
 
@@ -26,20 +28,11 @@ function Navbar() {
     const [showProfile, setShowProfile] = useState(false);
     const [showParameters, setShowParameters] = useState(false);
 
-    const settings = [
-      {
-          name: 'Profil',
-          action: () => setShowProfile(true),
-      },
-      {
-          name: 'Paramètres',
-          action: () => setShowParameters(true),
-      },
-      {
-          name: 'Déconnexion',
-          action: () => {},
-      }
-    ];
+    const [currentUser, setCurrentUser] = useContext(UserContext);
+
+    useEffect(() => {
+      setCurrentUser(isAuthenticated());
+    }, []);
   
     const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
       setAnchorElNav(event.currentTarget);
@@ -65,6 +58,26 @@ function Navbar() {
       setAnchorElUser(null);
       setShowParameters(false);
     }
+
+    const handleLogOut = () => {
+      localStorage.removeItem('user');
+      setCurrentUser({ username: "", token: "" });
+    }
+
+    const settings = [
+      {
+          name: 'Profil',
+          action: () => setShowProfile(true),
+      },
+      {
+          name: 'Paramètres',
+          action: () => setShowParameters(true),
+      },
+      {
+          name: 'Déconnexion',
+          action: handleLogOut,
+      }
+    ];
   
     return (
       <>
@@ -160,7 +173,26 @@ function Navbar() {
     
               <Box sx={{ flexGrow: 0 }}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                      <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  { currentUser?.token ?
+                    <Typography
+                    sx={{
+                      backgroundColor: "lightgray",
+                      borderRadius: 50,
+                      fontSize: "1.2rem",
+                      width: 25,
+                      height: 25,
+                      p: 1,
+                      pt: 1,
+                      color: "white" }}>
+                      { currentUser.username.substring(0, 1).toUpperCase() }
+                    </Typography>
+                  :
+                  <Link to="/login" style={{ textDecoration: "none" }}>
+                    <Button sx={{ color: "lightgray", borderColor: "gray", '&:hover': { borderColor: "white", color: "white" } }} variant="outlined">
+                      Connexion
+                    </Button>
+                  </Link>
+                  }                  
                 </IconButton>
                 <Menu
                   sx={{ mt: '45px' }}

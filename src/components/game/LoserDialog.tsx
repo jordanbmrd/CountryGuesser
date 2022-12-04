@@ -34,7 +34,7 @@ const LoserDialog = (props: LoserDialogProps) => {
                 <Button>Revenir à l'accueil</Button>
             </Link>
             <Link style={{ textDecoration: 'none' }} to="/game">
-                <Button variant="contained">Rejouer</Button>
+                <Button onClick={props.onReplay} variant="contained">Rejouer</Button>
             </Link>
         </DialogActions>
         </Dialog>
@@ -45,6 +45,7 @@ const LoserDialog = (props: LoserDialogProps) => {
 interface LoserDialogProps {
     open: boolean;
     mysteryCountry: { name: string, flag: string, code: string, latLng: number[] };
+    onReplay: () => void;
 }
 
 export default LoserDialog;

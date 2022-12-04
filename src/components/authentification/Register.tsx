@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Grid, Paper, Avatar, TextField, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { BsFillLockFill } from "react-icons/bs";
@@ -6,6 +6,9 @@ import './Authentification.styles.css';
 
 const Register = () => {
     const [formValues, setFormValues] = useState({ username: "", email: "", password: "", confirmPassword: "" });
+
+    // Changement de la couleur de fond
+    useEffect(() => {document.body.style.backgroundColor = "#efeff0"}, []);
 
     const handleInputChange = (e: any): void => {
         const { name, value } = e.target;

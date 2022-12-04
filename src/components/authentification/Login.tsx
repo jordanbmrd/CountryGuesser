@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Grid, Paper, Avatar, TextField, FormControlLabel, Checkbox, Button, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BsFillLockFill } from "react-icons/bs";
+import { login } from "../../services/AuthService";
 import './Authentification.styles.css';
 
 const Login = () => {
+    const navigate = useNavigate();
     const [formValues, setFormValues] = useState({ username: "", password: "", rememberMe: false });
+
+    // Changement de la couleur de fond
+    useEffect(() => {document.body.style.backgroundColor = "#efeff0"}, []);
 
     const handleInputChange = (e: any): void => {
         const { name, value } = e.target;
@@ -23,19 +28,15 @@ const Login = () => {
         });
     }
 
-    const handleSubmit = (e: any): void => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        fetch("http://localhost:8888/countryguesser-backend/login.php", {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formValues),
-        })
-        .then(data => console.log(data.text()))
-        .catch(err => console.log(err));
+        try {
+            await login(formValues.username, formValues.password);
+            navigate('/');
+        } catch (err) {
+            console.error("Erreur lors de la connexion", err);
+        }
     }
 
   return (

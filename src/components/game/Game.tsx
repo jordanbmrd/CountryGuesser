@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Box, Typography, Alert, Button, Stack } from "@mui/material";
 import Map from './Map';
 import WinnerDialog from './WinnerDialog';
 import LoserDialog from './LoserDialog';
 import LoadingBar from '../main/LoadingBar';
 import Loader from "../main/Loader";
+import UserContext from "../../services/UserContext";
+import { isAuthenticated } from "../../services/AuthService";
 import { secondsToTime } from "../../utils/time.utils";
 import '../../animations/shake.animation.css';
 
@@ -20,6 +22,10 @@ const Game = () => {
   const [leftClues, setLeftClues] = useState(0);  // Initialisé au chargement de la Map à 3
   const [errors, setErrors] = useState(0);
   const [shake, setShake] = useState(false);
+
+  const [currentUser, setCurrentUser] = useContext(UserContext);
+
+  useEffect(() => setCurrentUser(isAuthenticated()), []);
 
   // Changement de la couleur de fond
   useEffect(() => {document.body.style.backgroundColor = "#efeff0"}, []);
@@ -76,7 +82,8 @@ const Game = () => {
       onReplay={handleReplay} />
       <LoserDialog
       open={loserDialogVisible}
-      mysteryCountry={mysteryCountry} />
+      mysteryCountry={mysteryCountry}
+      onReplay={handleReplay} />
       <LoadingBar visible={isLoading} />
 
       <Box
@@ -149,6 +156,11 @@ const Game = () => {
             </Stack>
           </Stack>
         </Stack>
+
+        <Box sx={{ position: "absolute", bottom: 8 }}>
+          { currentUser?.token ? <Typography>Connecté</Typography>
+          : <Typography>Non connecté</Typography>}
+        </Box>
       </Box>
     </>
   );
