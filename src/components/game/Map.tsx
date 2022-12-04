@@ -30,7 +30,8 @@ const displayCircle = (map: any, lat: number, lng: number, precision: number) =>
     map.getLayer(idOutline) && map.removeLayer(idOutline);
     map.getSource(idOutline) && map.removeSource(idOutline);
 
-    map.addLayer({
+    // Couleur du cercle
+    /*map.addLayer({
         "id": idCircle,
         "type": "fill",
         "source": {
@@ -41,7 +42,8 @@ const displayCircle = (map: any, lat: number, lng: number, precision: number) =>
             "fill-color": "red",
             "fill-opacity": 0.5
         }
-    });
+    });*/
+    // Contour du cercle
     map.addLayer({
         "id": idOutline,
         "type": "line",
@@ -148,7 +150,6 @@ const Map = (props: MapProps) => {
 
         const lat = props.mysteryCountry.latLng[0];
         const lng = props.mysteryCountry.latLng[1];
-        console.log(lat, lng);
         displayCircle(map.current, lat, lng, props.leftClues);
     }
 

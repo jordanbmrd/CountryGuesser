@@ -16,7 +16,7 @@ const pages = [
     },
     {
         name: 'À propos',
-        link: '/'
+        link: '/about'
     }];
 
 function Navbar() {

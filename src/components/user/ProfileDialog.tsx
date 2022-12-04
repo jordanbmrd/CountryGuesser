@@ -1,5 +1,4 @@
-import { Button, Typography, Dialog, DialogContent, DialogActions, IconButton } from "@mui/material";
-import { AiFillCloseCircle } from 'react-icons/ai';
+import { Button, Typography, Dialog, DialogContent, DialogActions } from "@mui/material";
 import DialogTitle from "./DialogTitle";
 
 const ProfileDialog = (props: ProfileDialogProps) => {
