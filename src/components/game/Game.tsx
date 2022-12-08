@@ -1,16 +1,18 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, Alert, Button, Stack } from "@mui/material";
+import { useParams } from "react-router-dom";
 import Map from './Map';
 import WinnerDialog from './WinnerDialog';
 import LoserDialog from './LoserDialog';
 import LoadingBar from '../main/LoadingBar';
+import ChatDialog from './ChatDialog';
 import Loader from "../main/Loader";
-import UserContext from "../../services/UserContext";
-import { isAuthenticated } from "../../services/AuthService";
 import { secondsToTime } from "../../utils/time.utils";
 import '../../animations/shake.animation.css';
 
 const Game = () => {
+  const { gameMode } = useParams();
+
   const [mysteryCountry, setMysteryCountry] = useState({ name: "", flag: "", code: "", latLng: [] });
   const [selectedCountry, setSelectedCountry] = useState({ name: "", code: "" });
   const [canValidate, setCanValidate] = useState(false);
@@ -23,9 +25,7 @@ const Game = () => {
   const [errors, setErrors] = useState(0);
   const [shake, setShake] = useState(false);
 
-  const [currentUser, setCurrentUser] = useContext(UserContext);
-
-  useEffect(() => setCurrentUser(isAuthenticated()), []);
+  const [chatOpen, setChatOpen] = useState(false);
 
   // Changement de la couleur de fond
   useEffect(() => {document.body.style.backgroundColor = "#efeff0"}, []);
@@ -74,6 +74,9 @@ const Game = () => {
 
   return (
     <>
+      <ChatDialog
+      open={chatOpen}
+      setOpen={setChatOpen} />
       <WinnerDialog
       open={winnerDialogVisible}
       mysteryCountry={mysteryCountry}
@@ -105,7 +108,9 @@ const Game = () => {
             setLeftClues={setLeftClues}
             onLoad={handleMapLoaded}
             winnerDialogVisible={winnerDialogVisible}
-            setLoserDialogVisible={setLoserDialogVisible} />
+            setLoserDialogVisible={setLoserDialogVisible}
+            isMultiplayer={gameMode === "multiplayer"}
+            setChatOpen={setChatOpen} />
           </Box>
           <Stack
           pt={5}
@@ -156,11 +161,6 @@ const Game = () => {
             </Stack>
           </Stack>
         </Stack>
-
-        <Box sx={{ position: "absolute", bottom: 8 }}>
-          { currentUser?.token ? <Typography>Connecté</Typography>
-          : <Typography>Non connecté</Typography>}
-        </Box>
       </Box>
     </>
   );

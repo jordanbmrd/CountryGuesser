@@ -1,10 +1,10 @@
 import { createContext, useState, useEffect, ReactNode, Dispatch } from "react";
 import { isAuthenticated } from "./AuthService";
 
-const UserContext = createContext<UserContextInterface>([{ username: "", token: "" }, () => null]);
+const UserContext = createContext<UserContextInterface>([{ id: null, nickname: "", email: "" }, () => null]);
 
 export const UserProvider = (props: UserProviderProps) => {
-    const [currentUser, setCurrentUser] = useState<User>({ username: "", token: "" });
+    const [currentUser, setCurrentUser] = useState<User>({ id: null, nickname: "", email: "" });
 
     useEffect(() => {
         const checkLoggedIn = async () => {
@@ -30,8 +30,9 @@ export const UserProvider = (props: UserProviderProps) => {
 }
 
 type User = {
-    username: string;
-    token: string;
+    id: number | null;
+    nickname: string;
+    email: string;
 }
 
 interface UserProviderProps {

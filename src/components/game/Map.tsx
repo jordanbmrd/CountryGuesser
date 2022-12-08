@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Map as Mapbox, Popup } from "mapbox-gl";
-import { Paper, Button, Box } from "@mui/material";
+import { Paper, Button, Box, Typography, Stack } from "@mui/material";
+import { CiChat1 } from "react-icons/ci";
 import { circle } from "@turf/turf";
 
 const displayCircle = (map: any, lat: number, lng: number, precision: number) => {
@@ -58,6 +59,12 @@ const displayCircle = (map: any, lat: number, lng: number, precision: number) =>
             "line-offset": 5
         },
         "layout": {}
+    });
+
+    map.flyTo({
+        center: [lng, lat],
+        essential: true,
+        zoom: 1,
     });
 }
 
@@ -165,11 +172,25 @@ const Map = (props: MapProps) => {
     <Box sx={{ position: "relative", width: "70vw", height: "90vh" }}>
         { props.leftClues > 0 &&
             <Button
-            sx={{ position: "absolute", zIndex: 3, top: 0, left: 0, margin: 3 }}
+            sx={{ position: "absolute", zIndex: 3, top: 0, left: 0, m: 3 }}
             variant="contained"
             onClick={handleClueClick}>
                 Utiliser un indice ({ props.leftClues } restant{ props.leftClues > 1 && 's'})
             </Button>
+        }
+        { props.isMultiplayer &&
+            <Stack
+            flexDirection="row"
+            alignItems="center"
+            sx={{ position: "absolute", zIndex: 3, top: 50, left: 0, m: 3 }}>
+                <Button
+                sx={{ minWidth: 10, mr: 2, bgcolor: 'white', color: 'black', '&:hover': { bgcolor: 'lightgray' } }}
+                variant="contained"
+                onClick={() => props.setChatOpen(true)}>
+                    <CiChat1 fontSize={20} />
+                </Button>
+                <Typography color="white">Adversaire: Charles24</Typography>
+            </Stack>
         }
         { props.selectedCountry && props.selectedCountry.name && (
             <Paper sx={{ p: 2, zIndex: 1, position: "absolute", bottom: 0, right: 0, margin: "0 24px 36px 0" }}>
@@ -182,8 +203,9 @@ const Map = (props: MapProps) => {
 }
 
 interface MapProps {
-    losedGame: boolean,
-    leftClues: number,
+    isMultiplayer: boolean;
+    losedGame: boolean;
+    leftClues: number;
     mysteryCountry: { name: string, flag: string, code: string, latLng: number[] };
     selectedCountry: { name: string, code: string };
     winnerDialogVisible: boolean;   // pour savoir si la partie est terminée
@@ -192,6 +214,7 @@ interface MapProps {
     setTimer: Dispatch<SetStateAction<number>>;
     setLeftClues: Dispatch<SetStateAction<number>>;
     setLoserDialogVisible: Dispatch<SetStateAction<boolean>>;
+    setChatOpen: Dispatch<SetStateAction<boolean>>;
     onLoad: () => void;
 }
 

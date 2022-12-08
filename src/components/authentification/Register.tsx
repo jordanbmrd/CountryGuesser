@@ -1,36 +1,38 @@
 import { useState, useEffect } from "react";
 import { Grid, Paper, Avatar, TextField, Button, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BsFillLockFill } from "react-icons/bs";
+import { register } from "../../services/AuthService";
 import './Authentification.styles.css';
 
 const Register = () => {
-    const [formValues, setFormValues] = useState({ username: "", email: "", password: "", confirmPassword: "" });
+    const navigate = useNavigate();
+
+    const [nickname, setNickname] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    const [response, setResponse] = useState<any>(null);
 
     // Changement de la couleur de fond
     useEffect(() => {document.body.style.backgroundColor = "#efeff0"}, []);
 
-    const handleInputChange = (e: any): void => {
-        const { name, value } = e.target;
-        setFormValues({
-            ...formValues,
-            [name]: value,
-        });
-    }
+    useEffect(() => {
+        if (response?.id) navigate('/');
+   }, [response]);
 
-    const handleSubmit = (e: any): void => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        fetch("http://localhost:8888/countryguesser-backend/register.php", {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formValues),
-        })
-        .then(data => console.log(data.text()))
-        .catch(err => console.log(err));
+        try {
+            if (password === confirmPassword)
+                setResponse(await register(nickname, email, password, confirmPassword));
+            else
+                setResponse(["Les mots de passe ne correspondent pas"]);
+        } catch (err) {
+            console.error("Erreur lors de l'enregistrement", err);
+        }
     }
 
   return (
@@ -50,11 +52,12 @@ const Register = () => {
                             <BsFillLockFill />
                         </Avatar>
                         <h2>Créer mon compte</h2>
+                        { !response?.id && response instanceof Array && <Typography color="red">{ response[0] }</Typography> }
                     </Grid>
-                    <TextField value={formValues.username} onChange={handleInputChange} name="username" sx={{ mt: 1, mb: 1 }} label="Nom d'utilisateur" placeholder="Entrez votre nom d'utilisateur" fullWidth required />
-                    <TextField value={formValues.email} onChange={handleInputChange} name="email" sx={{ mb: 1 }} label="Email" placeholder="Entrez votre email" fullWidth required />
-                    <TextField value={formValues.password} onChange={handleInputChange} name="password" sx={{ mb: 1 }} label="Mot de passe" placeholder="Entrez votre mot de passe" type="password" fullWidth required />
-                    <TextField value={formValues.confirmPassword} onChange={handleInputChange} name="confirmPassword" sx={{ mb: 1 }} label="Confirmer mot de passe" placeholder="Confirmez votre mot de passe" type="password" fullWidth required />
+                    <TextField value={nickname} onChange={(e) => setNickname(e.target.value)} name="username" sx={{ mt: 1, mb: 1 }} label="Nom d'utilisateur" placeholder="Entrez votre nom d'utilisateur" fullWidth required />
+                    <TextField value={email} onChange={(e) => setEmail(e.target.value)} name="email" sx={{ mb: 1 }} label="Email" placeholder="Entrez votre email" fullWidth required />
+                    <TextField value={password} onChange={(e) => setPassword(e.target.value)} name="password" sx={{ mb: 1 }} label="Mot de passe" placeholder="Entrez votre mot de passe" type="password" fullWidth required />
+                    <TextField value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} name="confirmPassword" sx={{ mb: 1 }} label="Confirmer mot de passe" placeholder="Confirmez votre mot de passe" type="password" fullWidth required />
                     <Button type="submit" color="primary" variant="contained" className="connectionSubmit" fullWidth>Créer</Button>
                     <Typography>
                         Déjà inscrit ?&nbsp;<Link style={{ textDecoration: 'none' }} to="/login">Se connecter</Link>

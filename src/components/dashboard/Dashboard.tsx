@@ -28,13 +28,13 @@ const Dashboard = () => {
           justifyContent="space-around"
           alignItems="center"
           sx={{ width: 500 }}>
-            <Link style={{ textDecoration: "none" }} to="/game">
+            <Link style={{ textDecoration: "none" }} to="/game/solo">
               <Typography align="center" className="play-btn">
                 <BsFillPersonFill />&nbsp;
                 1 joueur
               </Typography>
             </Link>
-            <Link style={{ textDecoration: "none" }} to="/game">
+            <Link style={{ textDecoration: "none" }} to="/game/multiplayer">
               <Typography align="center" className="play-btn">
                 <HiUserGroup />&nbsp;
                 2 joueurs

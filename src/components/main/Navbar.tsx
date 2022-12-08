@@ -1,5 +1,5 @@
 import { useState, useContext, MouseEvent, useEffect } from "react";
-import { AppBar, Box, Toolbar, MenuItem, Button, Avatar, Container, Menu, Typography, IconButton } from "@mui/material";
+import { AppBar, Box, Toolbar, MenuItem, Button, Container, Menu, Typography, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 import { AiOutlineMenu } from "react-icons/ai";
 import { isAuthenticated } from "../../services/AuthService";
@@ -60,8 +60,9 @@ function Navbar() {
     }
 
     const handleLogOut = () => {
+      setAnchorElUser(null);
       localStorage.removeItem('user');
-      setCurrentUser({ username: "", token: "" });
+      setCurrentUser({ id: null, nickname: "", email: "" });
     }
 
     const settings = [
@@ -173,7 +174,7 @@ function Navbar() {
     
               <Box sx={{ flexGrow: 0 }}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  { currentUser?.token ?
+                  { currentUser?.id ?
                     <Typography
                     sx={{
                       backgroundColor: "lightgray",
@@ -184,7 +185,7 @@ function Navbar() {
                       p: 1,
                       pt: 1,
                       color: "white" }}>
-                      { currentUser.username.substring(0, 1).toUpperCase() }
+                      { currentUser.nickname.substring(0, 1).toUpperCase() }
                     </Typography>
                   :
                   <Link to="/login" style={{ textDecoration: "none" }}>

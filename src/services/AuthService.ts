@@ -1,19 +1,34 @@
-// Connecte l'utilisateur avec l'API
-export const login = async (username: string, password: string) => {
-    // TODO Fetch Login User Data!
-    const response = {
-        username,
-        token: "ajkvjreErejfkrej5435grejghr",
-    }
+// Connexion utilisateur
+export const login = async (nickname_email: string, password: string) => {
+    const response = await (await fetch("https://api.countryguesser.deletesystem32.fr/login", {
+        method: "post",
+        body: JSON.stringify({
+            nickname_email,
+            password,
+        })
+    })).json();
 
-    // const token = response.data.token;
-    const token = response.token;
-    if (token) {
-        //localStorage.setItem('user', JSON.stringify(response.data));
-        localStorage.setItem('user', JSON.stringify(response));
-    }
+    const id = response.id;
+    if (id) localStorage.setItem('user', JSON.stringify(response));
 
-    // return response.data;
+    return response;
+}
+
+// Création compte utilisateur
+export const register = async (nickname: string, email: string, password: string, password_confirmation: string) => {
+    const response = await (await fetch("https://api.countryguesser.deletesystem32.fr/register", {
+        method: "post",
+        body: JSON.stringify({
+            nickname,
+            email,
+            password,
+            password_confirmation,
+        })
+    })).json();
+
+    const id = response.id;
+    if (id) localStorage.setItem('user', JSON.stringify(response));
+
     return response;
 }
 
