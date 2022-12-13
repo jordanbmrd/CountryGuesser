@@ -30,7 +30,7 @@ const WinnerDialog = (props: WinnerDialogProps) => {
         aria-describedby="alert-dialog-slide-description"
         >
         <DialogContent sx={{ m: "auto" }}>
-            <img src="confettis.png" alt="Confettis" width="150" />
+            <img src="/confettis.png" alt="Confettis" width="150" />
         </DialogContent>
         <DialogTitle>
             Bravo ! Vous avez gagné la partie !<br />

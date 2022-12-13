@@ -22,7 +22,7 @@ const LoserDialog = (props: LoserDialogProps) => {
         aria-describedby="alert-dialog-slide-description"
         >
         <DialogContent sx={{ m: "auto" }}>
-            <img src="emoji.png" alt="Emoji" width="150" />
+            <img src="/emoji.png" alt="Emoji" width="150" />
         </DialogContent>
         <DialogTitle>
             Vous avez abandonné mais pas de panique !<br />

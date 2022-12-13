@@ -48,6 +48,7 @@
         top: var(--end-position);
     }
 }
+
 .credits {
     animation: var(--animation-duration) credits linear infinite;
     -moz-animation: var(--animation-duration) credits linear infinite;

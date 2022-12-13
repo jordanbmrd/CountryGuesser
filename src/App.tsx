@@ -9,6 +9,7 @@ import Login from './components/authentification/Login';
 import Register from './components/authentification/Register';
 import ForgetPassword from './components/authentification/ForgetPassword';
 import Dashboard from './components/dashboard/Dashboard';
+import Waiting from './components/game/Waiting';
 import Game from './components/game/Game';
 import Leaderboards from './components/leaderboards/Leaderboards';
 import About from './components/about/About';
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={ <Login /> } />
           <Route path="/register" element={ <Register /> } />
           <Route path="/forget" element={ <ForgetPassword /> } />
+          <Route path="/waiting" element={ <Waiting /> } />
           <Route path="/game/:gameMode" element={ <Game /> } />
           <Route path="/leaderboards" element={ <Leaderboards /> } />
           <Route path="/about" element={ <About /> } />
