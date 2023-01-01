@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/CountryGuesser/static/css/main.a720775c.css",
+    "main.js": "/CountryGuesser/static/js/main.e9c09d0a.js",
+    "index.html": "/CountryGuesser/index.html",
+    "main.a720775c.css.map": "/CountryGuesser/static/css/main.a720775c.css.map",
+    "main.e9c09d0a.js.map": "/CountryGuesser/static/js/main.e9c09d0a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a720775c.css",
+    "static/js/main.e9c09d0a.js"
+  ]
+}
