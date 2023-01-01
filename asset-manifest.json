@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/CountryGuesser/static/css/main.a720775c.css",
-    "main.js": "/CountryGuesser/static/js/main.e9c09d0a.js",
+    "main.js": "/CountryGuesser/static/js/main.3d52506d.js",
     "index.html": "/CountryGuesser/index.html",
     "main.a720775c.css.map": "/CountryGuesser/static/css/main.a720775c.css.map",
-    "main.e9c09d0a.js.map": "/CountryGuesser/static/js/main.e9c09d0a.js.map"
+    "main.3d52506d.js.map": "/CountryGuesser/static/js/main.3d52506d.js.map"
   },
   "entrypoints": [
     "static/css/main.a720775c.css",
-    "static/js/main.e9c09d0a.js"
+    "static/js/main.3d52506d.js"
   ]
 }
