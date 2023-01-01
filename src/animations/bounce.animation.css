@@ -78,7 +78,7 @@
     }
 }
 
-.bounce span {
+.bounce {
     animation: .3s bounce ease infinite alternate;
     -moz-animation: .3s bounce ease infinite alternate;
     -webkit-animation: .3s bounce ease infinite alternate;

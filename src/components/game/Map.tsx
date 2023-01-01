@@ -178,7 +178,7 @@ const Map = (props: MapProps) => {
                 Utiliser un indice ({ props.leftClues } restant{ props.leftClues > 1 && 's'})
             </Button>
         }
-        { props.isMultiplayer &&
+        { props.isMultiplayer && props.leftClues > 0 && 
             <Stack
             flexDirection="row"
             alignItems="center"

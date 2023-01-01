@@ -1,15 +1,19 @@
-import { useEffect, useState, useRef, ReactNode } from "react";
+import { useEffect, useState, ReactNode, useContext } from "react";
+import { useParams } from "react-router-dom";
 import { Stack, Box, Typography, Skeleton, List, ListItem, ListItemButton, ListItemText, ListItemIcon, Zoom, Alert, Slide } from "@mui/material";
-import { Question } from "../../utils/interfaces/Question.interface";
-import { getRandomQuestion, validateAnswer } from "../../utils/questions.utils";
-import "../../animations/earth.animation.css";
-import "../../animations/bounce.animation.css";
+import { Question } from "../../../utils/interfaces/Question.interface";
+import { getRandomQuestion, validateAnswer } from "../../../utils/questions.utils";
+import "../../../animations/earth.animation.css";
+import "../../../animations/bounce.animation.css";
 import "./Waiting.styles.css";
+import UserContext from "../../../services/UserContext";
+import { isAuthenticated } from "../../../services/AuthService";
 
-const Waiting = () => {
-    const playerFoundTextRef = useRef<HTMLElement>(null);
+const Waiting = (props: WaitingProps) => {
+    const { gameMode } = useParams();
 
-    const [playerFound, setPlayerFound] = useState(false);
+    const [currentUser, setCurrentUser] = useContext(UserContext);
+
     const [quote, setQuote] = useState({
         content: "",
         author: "",
@@ -25,6 +29,7 @@ const Waiting = () => {
     // Changement de la couleur de fond
     useEffect(() => {
         document.body.style.backgroundColor = "#efeff0";
+        setCurrentUser(isAuthenticated());
 
         // Chargement d'une question du quiz
         setQuestion(getRandomQuestion());
@@ -39,19 +44,6 @@ const Waiting = () => {
                 author: data[1] !== "null" ? data[1] : "Inconnu",
             });
         });
-
-        // Nécessaire pour l'animation du texte "Joueur trouvé !"
-        if (playerFoundTextRef.current) {
-            Array.from(playerFoundTextRef.current.children).forEach((child: Element, i: number) => {
-                const childSpan = child as HTMLElement;
-                childSpan.style.animationDelay = `.${i % 10}s`;
-            })
-        }
-
-        // TODO: Supprimer ça et mettre le vrai système
-        setTimeout(() => {
-            setPlayerFound(true);
-        }, 5000);
     }, []);
 
     const fetchQuote = async () => {
@@ -80,7 +72,7 @@ const Waiting = () => {
         }
     }
 
-    return !playerFound ? (
+    return !props.foundPlayers ? (
         <Stack
         direction="row"
         justifyContent="space-around"
@@ -120,7 +112,7 @@ const Waiting = () => {
                     </ListItem>
 
                     { question.answers.map((proposition, i) => (
-                        <ListItem disablePadding>
+                        <ListItem key={i} disablePadding>
                             <ListItemButton onClick={() => handleAnswer(proposition)} sx={{ display: "flex", justifyContent: "center" }}>
                                 <ListItemIcon>
                                     <ListNumberIcon>{ i + 1 }</ListNumberIcon>
@@ -141,26 +133,18 @@ const Waiting = () => {
             }
         </Stack>
     ) : (
-        <Slide direction="left" in={playerFound} timeout={1000} mountOnEnter unmountOnExit>
+        <Slide direction="left" in={props.foundPlayers} timeout={1000} mountOnEnter unmountOnExit>
             <Stack justifyContent="center" alignItems="center" bgcolor="#3f50b5" width="100vw" height="100vh">
-                <Typography ref={playerFoundTextRef} className="playerFoundText bounce">
-                    <span>J</span>
-                    <span>o</span>
-                    <span>u</span>
-                    <span>e</span>
-                    <span>u</span>
-                    <span>r</span>&nbsp;&nbsp;
-                    <span>t</span>
-                    <span>r</span>
-                    <span>o</span>
-                    <span>u</span>
-                    <span>v</span>
-                    <span>é</span>&nbsp;
-                    <span>!</span>
+                <Typography className="playerFoundText bounce">
+                    Joueur trouvé !
                 </Typography>
             </Stack>
         </Slide>
     );
+}
+
+interface WaitingProps {
+    foundPlayers: boolean;
 }
 
 const ListNumberIcon = (props: ListNumberIconProps) => {

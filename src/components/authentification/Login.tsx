@@ -17,7 +17,8 @@ const Login = () => {
     useEffect(() => {document.body.style.backgroundColor = "#efeff0"}, []);
 
     useEffect(() => {
-        if (response?.id) navigate('/');
+        if (response?.player_id)
+            navigate('/');
     }, [response]);
 
     const handleSubmit = async (e: any) => {

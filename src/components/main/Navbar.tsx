@@ -62,7 +62,7 @@ function Navbar() {
     const handleLogOut = () => {
       setAnchorElUser(null);
       localStorage.removeItem('user');
-      setCurrentUser({ id: null, nickname: "", email: "" });
+      setCurrentUser({ player_id: null, nickname: "", email: "", credential: "" });
     }
 
     const settings = [
@@ -174,7 +174,7 @@ function Navbar() {
     
               <Box sx={{ flexGrow: 0 }}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  { currentUser?.id ?
+                  { currentUser?.player_id ?
                     <Typography
                     sx={{
                       backgroundColor: "lightgray",

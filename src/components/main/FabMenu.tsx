@@ -37,7 +37,7 @@ const FabMenu = () => {
                         <Typography>1 joueur</Typography>
                     </Stack>
                 </Link>
-                <Link to="/game/multiplayer" style={{ textDecoration: 'none', color: "black" }}>
+                <Link to="/game/solo" style={{ textDecoration: 'none', color: "black" }}>
                     <Stack
                     flexDirection="row"
                     justifyContent="flex-start"

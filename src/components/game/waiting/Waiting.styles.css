@@ -11,13 +11,13 @@
     background-color: #fafafa;
 }
 .raleway {
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Raleway', sans-serif !important;
 }
 .quizSuccess {
     width: 400px;
 }
 
-.playerFoundText span {
+.playerFoundText {
     font-family: 'Titan One', cursive !important;
     position: relative;
     top: 20px;

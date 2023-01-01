@@ -1,14 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { Box, Typography, Alert, Button, Stack } from "@mui/material";
 import { useParams } from "react-router-dom";
 import Map from './Map';
-import WinnerDialog from './WinnerDialog';
-import LoserDialog from './LoserDialog';
+import WinnerDialog from './dialogs/WinnerDialog';
+import LoserDialog from './dialogs/LoserDialog';
 import LoadingBar from '../main/LoadingBar';
-import ChatDialog from './ChatDialog';
+import ChatDialog from './dialogs/ChatDialog';
+import Waiting from "./waiting/Waiting";
 import Loader from "../main/Loader";
 import { secondsToTime } from "../../utils/time.utils";
+import { isAuthenticated } from "../../services/AuthService";
+import UserContext from "../../services/UserContext";
 import '../../animations/shake.animation.css';
+import { configure } from "@testing-library/react";
+import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
+import { ReadyState } from "react-use-websocket";
 
 const Game = () => {
   const { gameMode } = useParams();
@@ -18,6 +24,7 @@ const Game = () => {
   const [canValidate, setCanValidate] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [timer, setTimer] = useState(0);
+  const [winner, setWinner] = useState("");
   const [winnerDialogVisible, setWinnerDialogVisible] = useState(false);
   const [loserDialogVisible, setLoserDialogVisible] = useState(false);
   const [losedGame, setLosedGame] = useState(false);
@@ -25,41 +32,116 @@ const Game = () => {
   const [errors, setErrors] = useState(0);
   const [shake, setShake] = useState(false);
 
+  // TODO : à transformer en "Bientôt"
   const [chatOpen, setChatOpen] = useState(false);
 
-  // Changement de la couleur de fond
-  useEffect(() => {document.body.style.backgroundColor = "#efeff0"}, []);
+  const [foundPlayers, setFoundPlayers] = useState(false);
+
+  const [socketUrl, setSocketUrl] = useState("");
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+
+  const connectionStatus = {
+    [ReadyState.CONNECTING]: 'Connecting',
+    [ReadyState.OPEN]: 'Open',
+    [ReadyState.CLOSING]: 'Closing',
+    [ReadyState.CLOSED]: 'Closed',
+    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+  }[readyState];
+
+  const [currentUser, setCurrentUser] = useContext(UserContext);
+
+  useEffect(() => {
+    document.body.style.backgroundColor = "#efeff0";  // Changement de la couleur de fond
+    setCurrentUser(isAuthenticated());
+  }, []);
+
+  useEffect(() => {
+    if (currentUser.credential) {
+      setSocketUrl(`ws://ws.countryguesser.deletesystem32.fr?playerCredential=${ currentUser.credential }&roomSize=2&maxRounds=7`);
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (readyState === ReadyState.OPEN) {
+      console.log("sendingMsg ::: ", readyState, ReadyState.OPEN, connectionStatus);
+      fetchRandomCountry().then(randomCountry => {
+        setMysteryCountry(randomCountry);
+        console.log("randomCountry ::: ", randomCountry);
+
+        sendMessage(JSON.stringify({
+          type: "roundData",
+          ...randomCountry,
+        }));
+      });
+    }
+  }, [connectionStatus]);
 
   const handleMapLoaded = () => {
-    loadRandomCountry();
     setIsLoading(false);
   }
 
-  const loadRandomCountry = () => {
-    fetch("https://restcountries.com/v2/all/")
+  useEffect(() => console.log(connectionStatus), [connectionStatus]);
+  useEffect(() => console.log(lastMessage && JSON.parse(lastMessage.data)), [lastMessage]);
+
+  useEffect(() => {
+    if (lastMessage) {
+      const data = JSON.parse(lastMessage.data);
+      console.log("Received ::: ", data);
+
+      switch(data.informationType) {
+        case "roomFull":  // Tous les joueurs trouvés
+          setFoundPlayers(true);
+          break;
+        case "roundCreated":
+          console.log("Setting mystery country");
+          setMysteryCountry({
+            name: data.name,
+            flag: data.flag,
+            code: data.code,
+            latLng: data.latLng,
+          });
+          break;
+        case "wrongAnswer":
+          setErrors(errors => errors + 1);
+          setShake(true);
+          break;
+        case "roundOver":
+          setWinner(data.roundWinnerNickname);
+          if (data.roundWinnerNickname === currentUser.nickname) {  
+            setWinnerDialogVisible(true);
+          }
+          else {
+            setLoserDialogVisible(true);
+          }
+          break;
+        default: break;
+      }
+      if (data.informationType === "roomFull") {  // Tous les joueurs trouvés
+        setFoundPlayers(true);
+      }
+    }
+  }, [lastMessage]);
+
+  const fetchRandomCountry = (): Promise<any> => {
+    return fetch("https://restcountries.com/v2/all/")
     .then(data => data.json())
     .then(data => {
       const randomCountry = data[Math.floor(Math.random() * data.length)];
 
-      setMysteryCountry({
+      return {
         name: randomCountry.translations.fr,
         flag: randomCountry.flag,
         code: randomCountry.alpha2Code.toUpperCase(),
         latLng: randomCountry.latlng,
-      })
+      };
     });
   }
 
   const handleValidateAnswer = () => {
-    if (selectedCountry.code === mysteryCountry.code) {
-      // Bon pays validé
-      setWinnerDialogVisible(true);
-    }
-    else {
-      // Mauvais pays validé
-      setErrors(errors => errors + 1);
-      setShake(true);
-    }
+    sendMessage(JSON.stringify({
+      type: "playerResponse",
+      playerResponse: selectedCountry.code,
+    }));
   }
 
   const handleLeave = () => {
@@ -72,7 +154,11 @@ const Game = () => {
     window.location.reload();
   }
 
-  return (
+  useEffect(() => {
+    console.log(mysteryCountry);
+  }, [mysteryCountry]);
+
+  return foundPlayers ? (
     <>
       <ChatDialog
       open={chatOpen}
@@ -86,7 +172,8 @@ const Game = () => {
       <LoserDialog
       open={loserDialogVisible}
       mysteryCountry={mysteryCountry}
-      onReplay={handleReplay} />
+      onReplay={handleReplay}
+      winnerName={winner} />
       <LoadingBar visible={isLoading} />
 
       <Box
@@ -163,6 +250,8 @@ const Game = () => {
         </Stack>
       </Box>
     </>
+  ) : (
+    <Waiting foundPlayers={foundPlayers} />
   );
 }
 

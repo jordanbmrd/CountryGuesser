@@ -8,7 +8,7 @@ export const login = async (nickname_email: string, password: string) => {
         })
     })).json();
 
-    const id = response.id;
+    const id = response.player_id;
     if (id) localStorage.setItem('user', JSON.stringify(response));
 
     return response;
@@ -26,7 +26,7 @@ export const register = async (nickname: string, email: string, password: string
         })
     })).json();
 
-    const id = response.id;
+    const id = response.player_id;
     if (id) localStorage.setItem('user', JSON.stringify(response));
 
     return response;
