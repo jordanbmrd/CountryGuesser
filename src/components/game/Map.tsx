@@ -95,7 +95,7 @@ const Map = (props: MapProps) => {
 
         map.current.on('click', (e: any) => {
             const { lat, lng } = e.lngLat;
-            fetch(`http://api.tiles.mapbox.com/v4/geocode/mapbox.places-country-v1/${lng},${lat}.json?access_token=pk.eyJ1IjoiZG9yaXQ3NSIsImEiOiJjbGFqdjU1bzYwZzBhM3NvMGJ0Z2M1a3F2In0.RddpBuye5jg57iGg25DQTA&language=fr`)
+            fetch(`https://api.tiles.mapbox.com/v4/geocode/mapbox.places-country-v1/${lng},${lat}.json?access_token=pk.eyJ1IjoiZG9yaXQ3NSIsImEiOiJjbGFqdjU1bzYwZzBhM3NvMGJ0Z2M1a3F2In0.RddpBuye5jg57iGg25DQTA&language=fr`)
             .then(data => data.json())
             .then(data => {
                 const { place_name_fr, properties } = data.features[0];
