@@ -20,8 +20,6 @@ export const UserProvider = (props: UserProviderProps) => {
         checkLoggedIn();
     }, []);
 
-    console.log('usercontext', currentUser);
-
   return (
     <UserContext.Provider value={[ currentUser, setCurrentUser ]}>
         { props.children }

@@ -65,7 +65,7 @@ const Game = () => {
 
   useEffect(() => {
     if (isMultiplayer() && currentUser.credential) {
-      setSocketUrl(`ws://ws.countryguesser.deletesystem32.fr?playerCredential=${ currentUser.credential }&roomSize=${ nbPlayers ? nbPlayers : "2" }&maxRounds=${ nbRounds ? nbRounds : "3" }`);
+      setSocketUrl(`wss://ws.countryguesser.deletesystem32.fr?playerCredential=${ currentUser.credential }&roomSize=${ nbPlayers ? nbPlayers : "2" }&maxRounds=${ nbRounds ? nbRounds : "3" }`);
     }
   }, [currentUser]);
 
