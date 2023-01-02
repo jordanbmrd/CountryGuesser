@@ -81,14 +81,13 @@ const Game = () => {
     setIsLoading(false);
   }
 
-  // À retirer lors de la MEP
-  useEffect(() => console.log(connectionStatus), [connectionStatus]);
-  useEffect(() => console.log(lastMessage && JSON.parse(lastMessage.data)), [lastMessage]);
-
   useEffect(() => {
     if (lastMessage) {
       const data = JSON.parse(lastMessage.data);
-      console.log("Received ::: ", data);
+
+      if (data.errorType === "aPlayerLeft") {
+        setErrorDialogVisible(true);
+      }
 
       switch(data.informationType) {
         case "roomFull":  // Tous les joueurs trouvés
@@ -98,7 +97,6 @@ const Game = () => {
           }, 3000);
           break;
         case "roundCreated":
-          console.log("Setting mystery country");
           setMysteryCountry({
             name: data.name,
             flag: data.flag,
@@ -131,9 +129,6 @@ const Game = () => {
           else {
             setLoserDialogVisible(true);
           }
-          break;
-        case "aPlayerLeft":
-          setErrorDialogVisible(true);
           break;
         default: break;
       }
