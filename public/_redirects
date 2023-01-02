@@ -1,1 +1,4 @@
 /* /index.html 200
+/api/* https://api.countryguesser.deletesystem32.fr 200
+/restcountries https://restcountries.com/v2/all 200
+/mapboxtiles http://api.tiles.mapbox.com 200

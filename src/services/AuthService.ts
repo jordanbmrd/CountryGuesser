@@ -1,6 +1,6 @@
 // Connexion utilisateur
 export const login = async (nickname_email: string, password: string) => {
-    const response = await (await fetch("https://api.countryguesser.deletesystem32.fr/login", {
+    const response = await (await fetch("/api/login", {
         method: "post",
         body: JSON.stringify({
             nickname_email,
@@ -16,7 +16,7 @@ export const login = async (nickname_email: string, password: string) => {
 
 // Création compte utilisateur
 export const register = async (nickname: string, email: string, password: string, password_confirmation: string) => {
-    const response = await (await fetch("https://api.countryguesser.deletesystem32.fr/register", {
+    const response = await (await fetch("/api/register", {
         method: "post",
         body: JSON.stringify({
             nickname,

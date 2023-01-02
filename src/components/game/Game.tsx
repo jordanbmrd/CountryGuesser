@@ -153,7 +153,7 @@ const Game = () => {
   }
 
   const fetchRandomCountry = (): Promise<any> => {
-    return fetch("https://restcountries.com/v2/all/")
+    return fetch("/restcountries")
     .then(data => data.json())
     .then(data => {
       const randomCountry = data[Math.floor(Math.random() * data.length)];

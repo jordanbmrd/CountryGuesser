@@ -20,7 +20,7 @@ const Statistics = () => {
   const [currentUser, setCurrentUser] = useContext(UserContext);
 
   const loadLeaderboard = () => {
-    fetch("https://api.countryguesser.deletesystem32.fr/player/getleaderboard")
+    fetch("/api/player/getleaderboard")
     .then(data => data.json())
     .then(data => {
       setRows(data);
