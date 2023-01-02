@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Map as Mapbox, Popup } from "mapbox-gl";
-import { Paper, Button, Box, Typography, Stack } from "@mui/material";
-import { CiChat1 } from "react-icons/ci";
+import { Paper, Button, Box } from "@mui/material";
 import { circle } from "@turf/turf";
 
 const displayCircle = (map: any, lat: number, lng: number, precision: number) => {
@@ -178,20 +177,6 @@ const Map = (props: MapProps) => {
                 Utiliser un indice ({ props.leftClues } restant{ props.leftClues > 1 && 's'})
             </Button>
         }
-        { props.isMultiplayer && props.leftClues > 0 && 
-            <Stack
-            flexDirection="row"
-            alignItems="center"
-            sx={{ position: "absolute", zIndex: 3, top: 50, left: 0, m: 3 }}>
-                <Button
-                sx={{ minWidth: 10, mr: 2, bgcolor: 'white', color: 'black', '&:hover': { bgcolor: 'lightgray' } }}
-                variant="contained"
-                onClick={() => props.setChatOpen(true)}>
-                    <CiChat1 fontSize={20} />
-                </Button>
-                <Typography color="white">Adversaire: Charles24</Typography>
-            </Stack>
-        }
         { props.selectedCountry && props.selectedCountry.name && (
             <Paper sx={{ p: 2, zIndex: 1, position: "absolute", bottom: 0, right: 0, margin: "0 24px 36px 0" }}>
                 Pays sélectionné : {props.selectedCountry.name}
@@ -214,7 +199,6 @@ interface MapProps {
     setTimer: Dispatch<SetStateAction<number>>;
     setLeftClues: Dispatch<SetStateAction<number>>;
     setLoserDialogVisible: Dispatch<SetStateAction<boolean>>;
-    setChatOpen: Dispatch<SetStateAction<boolean>>;
     onLoad: () => void;
 }
 

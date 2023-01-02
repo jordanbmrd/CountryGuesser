@@ -5,7 +5,11 @@
     border: 1px solid white;
     color: white;
     font-size: 1.4rem !important;
-    width: 200px
+    width: 200px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .play-btn:hover {
     background-color: white;

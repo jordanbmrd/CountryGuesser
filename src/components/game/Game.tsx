@@ -1,23 +1,25 @@
-import { useState, useEffect, useContext, useCallback } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Box, Typography, Alert, Button, Stack } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Map from './Map';
 import WinnerDialog from './dialogs/WinnerDialog';
 import LoserDialog from './dialogs/LoserDialog';
+import ErrorDialog from "./dialogs/ErrorDialog";
 import LoadingBar from '../main/LoadingBar';
-import ChatDialog from './dialogs/ChatDialog';
 import Waiting from "./waiting/Waiting";
 import Loader from "../main/Loader";
 import { secondsToTime } from "../../utils/time.utils";
 import { isAuthenticated } from "../../services/AuthService";
 import UserContext from "../../services/UserContext";
 import '../../animations/shake.animation.css';
-import { configure } from "@testing-library/react";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import { ReadyState } from "react-use-websocket";
+import { useSnackbar } from "notistack";
 
 const Game = () => {
-  const { gameMode } = useParams();
+  const navigate = useNavigate();
+  const { nbPlayers, nbRounds } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [mysteryCountry, setMysteryCountry] = useState({ name: "", flag: "", code: "", latLng: [] });
   const [selectedCountry, setSelectedCountry] = useState({ name: "", code: "" });
@@ -27,14 +29,14 @@ const Game = () => {
   const [winner, setWinner] = useState("");
   const [winnerDialogVisible, setWinnerDialogVisible] = useState(false);
   const [loserDialogVisible, setLoserDialogVisible] = useState(false);
+  const [errorDialogVisible, setErrorDialogVisible] = useState(false);
   const [losedGame, setLosedGame] = useState(false);
   const [leftClues, setLeftClues] = useState(0);  // Initialisé au chargement de la Map à 3
   const [errors, setErrors] = useState(0);
   const [shake, setShake] = useState(false);
+  const [roundCount, setRoundCount] = useState(1);
 
-  // TODO : à transformer en "Bientôt"
-  const [chatOpen, setChatOpen] = useState(false);
-
+  const [launchFoundPlayersAnimation, setLaunchFoundPlayersAnimation] = useState(false);
   const [foundPlayers, setFoundPlayers] = useState(false);
 
   const [socketUrl, setSocketUrl] = useState("");
@@ -52,34 +54,34 @@ const Game = () => {
 
   useEffect(() => {
     document.body.style.backgroundColor = "#efeff0";  // Changement de la couleur de fond
-    setCurrentUser(isAuthenticated());
+
+    const user = isAuthenticated();
+    setCurrentUser(user);
+
+    if (!user.credential && isMultiplayer()) {
+      navigate('/game');
+    }
   }, []);
 
   useEffect(() => {
-    if (currentUser.credential) {
-      setSocketUrl(`ws://ws.countryguesser.deletesystem32.fr?playerCredential=${ currentUser.credential }&roomSize=2&maxRounds=7`);
+    if (isMultiplayer() && currentUser.credential) {
+      setSocketUrl(`ws://ws.countryguesser.deletesystem32.fr?playerCredential=${ currentUser.credential }&roomSize=${ nbPlayers ? nbPlayers : "2" }&maxRounds=${ nbRounds ? nbRounds : "3" }`);
     }
   }, [currentUser]);
 
   useEffect(() => {
-    if (readyState === ReadyState.OPEN) {
-      console.log("sendingMsg ::: ", readyState, ReadyState.OPEN, connectionStatus);
-      fetchRandomCountry().then(randomCountry => {
-        setMysteryCountry(randomCountry);
-        console.log("randomCountry ::: ", randomCountry);
-
-        sendMessage(JSON.stringify({
-          type: "roundData",
-          ...randomCountry,
-        }));
-      });
-    }
+    if (readyState === ReadyState.OPEN)
+      prepareMysteryCountry();
   }, [connectionStatus]);
 
   const handleMapLoaded = () => {
+    if (!isMultiplayer()) {
+      fetchRandomCountry().then(randomCountry => setMysteryCountry(randomCountry));
+    }
     setIsLoading(false);
   }
 
+  // À retirer lors de la MEP
   useEffect(() => console.log(connectionStatus), [connectionStatus]);
   useEffect(() => console.log(lastMessage && JSON.parse(lastMessage.data)), [lastMessage]);
 
@@ -90,7 +92,10 @@ const Game = () => {
 
       switch(data.informationType) {
         case "roomFull":  // Tous les joueurs trouvés
-          setFoundPlayers(true);
+          setLaunchFoundPlayersAnimation(true);
+          setTimeout(() => {
+            setFoundPlayers(true);
+          }, 3000);
           break;
         case "roundCreated":
           console.log("Setting mystery country");
@@ -100,27 +105,52 @@ const Game = () => {
             code: data.code,
             latLng: data.latLng,
           });
+          setLeftClues(3);
           break;
         case "wrongAnswer":
           setErrors(errors => errors + 1);
           setShake(true);
           break;
-        case "roundOver":
-          setWinner(data.roundWinnerNickname);
-          if (data.roundWinnerNickname === currentUser.nickname) {  
+        case "roundOver": // Fin d'un round
+          if (data.nextRoundId <= (nbRounds ?? 3)) {
+            prepareMysteryCountry();
+            setRoundCount(roundCount => roundCount + 1);
+
+            if (data.roundWinnerNickname === currentUser.nickname) {
+              enqueueSnackbar("Vous avez remporté ce round", { variant: "success" });
+            } else {
+              enqueueSnackbar("Votre adversaire a remporté ce round", { variant: "info" });
+            }
+          }
+          break;
+        case "gameOver":  // Fin de la partie
+          setWinner(data.gameWinnerNickname);
+          if (data.gameWinnerNickname === currentUser.nickname) {  
             setWinnerDialogVisible(true);
           }
           else {
             setLoserDialogVisible(true);
           }
           break;
+        case "aPlayerLeft":
+          setErrorDialogVisible(true);
+          break;
         default: break;
-      }
-      if (data.informationType === "roomFull") {  // Tous les joueurs trouvés
-        setFoundPlayers(true);
       }
     }
   }, [lastMessage]);
+
+  const prepareMysteryCountry = (): void => {
+    if (isMultiplayer()) {
+      fetchRandomCountry().then(randomCountry => {
+        setMysteryCountry(randomCountry);
+        sendMessage(JSON.stringify({
+          type: "roundData",
+          ...randomCountry,
+        }));
+      });
+    }
+  }
 
   const fetchRandomCountry = (): Promise<any> => {
     return fetch("https://restcountries.com/v2/all/")
@@ -138,10 +168,23 @@ const Game = () => {
   }
 
   const handleValidateAnswer = () => {
-    sendMessage(JSON.stringify({
-      type: "playerResponse",
-      playerResponse: selectedCountry.code,
-    }));
+    if (isMultiplayer()) {
+      sendMessage(JSON.stringify({
+        type: "playerResponse",
+        playerResponse: selectedCountry.code,
+      }));
+    }
+    else {
+      if (selectedCountry.code === mysteryCountry.code) {
+        // Bon pays validé
+        setWinnerDialogVisible(true);
+      }
+      else {
+        // Mauvais pays validé
+        setErrors(errors => errors + 1);
+        setShake(true);
+      }
+    }
   }
 
   const handleLeave = () => {
@@ -154,15 +197,13 @@ const Game = () => {
     window.location.reload();
   }
 
-  useEffect(() => {
-    console.log(mysteryCountry);
-  }, [mysteryCountry]);
+  const isMultiplayer = () => nbPlayers !== undefined && nbPlayers !== "1";
 
-  return foundPlayers ? (
+  return foundPlayers || !isMultiplayer() ? (
     <>
-      <ChatDialog
-      open={chatOpen}
-      setOpen={setChatOpen} />
+      <ErrorDialog
+      open={errorDialogVisible}
+      onReplay={handleReplay} />
       <WinnerDialog
       open={winnerDialogVisible}
       mysteryCountry={mysteryCountry}
@@ -196,8 +237,7 @@ const Game = () => {
             onLoad={handleMapLoaded}
             winnerDialogVisible={winnerDialogVisible}
             setLoserDialogVisible={setLoserDialogVisible}
-            isMultiplayer={gameMode === "multiplayer"}
-            setChatOpen={setChatOpen} />
+            isMultiplayer={isMultiplayer()} />
           </Box>
           <Stack
           pt={5}
@@ -208,6 +248,7 @@ const Game = () => {
               <Typography color="lightgray">À toi de jouer !</Typography>
               <Typography variant="h3">Drapeau à trouver</Typography>
               <Typography variant="h6">Temps : {secondsToTime(timer)}s</Typography>
+              { isMultiplayer() && parseInt(nbRounds ?? "3") > 1 && <Typography variant="h6">Tour : { roundCount } / { nbRounds ?? 3 }</Typography>  }
               { errors ? <Typography variant="h6">Erreurs : {errors}</Typography> : null }
             </Box>
 
@@ -235,11 +276,13 @@ const Game = () => {
               width="100%"
               mt={2}
               mb={5}>
-                <Button
-                variant="outlined"
-                onClick={handleLeave}>
-                  Abandonner
-                </Button>
+                { !isMultiplayer() &&
+                  <Button
+                  variant="outlined"
+                  onClick={handleLeave}>
+                    Abandonner
+                  </Button>
+                }
                 <Button
                 variant="contained"
                 disabled={ !canValidate }
@@ -251,7 +294,7 @@ const Game = () => {
       </Box>
     </>
   ) : (
-    <Waiting foundPlayers={foundPlayers} />
+    <Waiting launchFoundPlayersAnimation={launchFoundPlayersAnimation} />
   );
 }
 

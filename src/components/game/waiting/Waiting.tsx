@@ -1,19 +1,12 @@
-import { useEffect, useState, ReactNode, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState, ReactNode } from "react";
 import { Stack, Box, Typography, Skeleton, List, ListItem, ListItemButton, ListItemText, ListItemIcon, Zoom, Alert, Slide } from "@mui/material";
 import { Question } from "../../../utils/interfaces/Question.interface";
 import { getRandomQuestion, validateAnswer } from "../../../utils/questions.utils";
 import "../../../animations/earth.animation.css";
 import "../../../animations/bounce.animation.css";
 import "./Waiting.styles.css";
-import UserContext from "../../../services/UserContext";
-import { isAuthenticated } from "../../../services/AuthService";
 
 const Waiting = (props: WaitingProps) => {
-    const { gameMode } = useParams();
-
-    const [currentUser, setCurrentUser] = useContext(UserContext);
-
     const [quote, setQuote] = useState({
         content: "",
         author: "",
@@ -29,7 +22,6 @@ const Waiting = (props: WaitingProps) => {
     // Changement de la couleur de fond
     useEffect(() => {
         document.body.style.backgroundColor = "#efeff0";
-        setCurrentUser(isAuthenticated());
 
         // Chargement d'une question du quiz
         setQuestion(getRandomQuestion());
@@ -72,7 +64,7 @@ const Waiting = (props: WaitingProps) => {
         }
     }
 
-    return !props.foundPlayers ? (
+    return !props.launchFoundPlayersAnimation ? (
         <Stack
         direction="row"
         justifyContent="space-around"
@@ -133,7 +125,7 @@ const Waiting = (props: WaitingProps) => {
             }
         </Stack>
     ) : (
-        <Slide direction="left" in={props.foundPlayers} timeout={1000} mountOnEnter unmountOnExit>
+        <Slide direction="left" in={props.launchFoundPlayersAnimation} timeout={1000} mountOnEnter unmountOnExit>
             <Stack justifyContent="center" alignItems="center" bgcolor="#3f50b5" width="100vw" height="100vh">
                 <Typography className="playerFoundText bounce">
                     Joueur trouvé !
@@ -144,7 +136,7 @@ const Waiting = (props: WaitingProps) => {
 }
 
 interface WaitingProps {
-    foundPlayers: boolean;
+    launchFoundPlayersAnimation: boolean;
 }
 
 const ListNumberIcon = (props: ListNumberIconProps) => {

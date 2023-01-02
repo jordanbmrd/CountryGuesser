@@ -1,24 +1,17 @@
 import { useState, useEffect } from "react";
-import { Grid, Paper, Avatar, TextField, FormControlLabel, Checkbox, Button, Typography } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Grid, Paper, Avatar, TextField, Button, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 import { MdLockClock } from "react-icons/md";
 import './Authentification.styles.css';
 
 const ForgetPassword = () => {
-    const navigate = useNavigate();
-
     const [nicknameEmail, setNicknameEmail] = useState("");
-
-    const [response, setResponse] = useState<any>(null);
 
     // Changement de la couleur de fond
     useEffect(() => {document.body.style.backgroundColor = "#efeff0"}, []);
 
-    useEffect(() => {
-        if (response?.id) navigate('/');
-    }, [response]);
-
     const handleSubmit = async (e: any) => {
+        // À faire
     }
 
   return (
@@ -38,7 +31,6 @@ const ForgetPassword = () => {
                             <MdLockClock />
                         </Avatar>
                         <h2>Mot de passe oublié ?</h2>
-                        { !response?.id && response instanceof Array && <Typography color="red">{ response[0] }</Typography> }
                         <Typography
                         color="gray"
                         fontSize="0.8rem"

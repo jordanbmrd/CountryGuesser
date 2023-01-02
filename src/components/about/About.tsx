@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { Stack, Box, Typography, Snackbar, Fade } from "@mui/material";
+import { useState, useRef } from "react";
+import { Stack, Box, Typography } from "@mui/material";
 import { BsPlay, BsPause } from "react-icons/bs";
 import Navbar from "../main/Navbar";
 import FabMenu from "../main/FabMenu";

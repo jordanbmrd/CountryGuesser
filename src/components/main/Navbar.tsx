@@ -13,8 +13,8 @@ const pages = [
         link: '/'
     },
     {
-        name: 'Classements',
-        link: '/leaderboards'
+        name: 'Statistiques',
+        link: '/statistics'
     },
     {
         name: 'À propos',
@@ -82,14 +82,6 @@ function Navbar() {
   
     return (
       <>
-        <ProfileDialog
-        open={showProfile}
-        handleClose={handleCloseProfileDialog} />
-
-        <ParametersDialog
-        open={showParameters}
-        handleClose={handleCloseParametersDialog} />
-
         <AppBar position="static" sx={{ backgroundColor: "transparent" }}>
           <Container maxWidth="xl">
             <Toolbar disableGutters>
@@ -175,18 +167,28 @@ function Navbar() {
               <Box sx={{ flexGrow: 0 }}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   { currentUser?.player_id ?
-                    <Typography
-                    sx={{
-                      backgroundColor: "lightgray",
-                      borderRadius: 50,
-                      fontSize: "1.2rem",
-                      width: 25,
-                      height: 25,
-                      p: 1,
-                      pt: 1,
-                      color: "white" }}>
-                      { currentUser.nickname.substring(0, 1).toUpperCase() }
-                    </Typography>
+                    <>
+                      <ProfileDialog
+                      currentUser={currentUser}
+                      open={showProfile}
+                      handleClose={handleCloseProfileDialog} />
+                      <ParametersDialog
+                      open={showParameters}
+                      handleClose={handleCloseParametersDialog} />
+
+                      <Typography
+                      sx={{
+                        backgroundColor: "lightgray",
+                        borderRadius: 50,
+                        fontSize: "1.2rem",
+                        width: 25,
+                        height: 25,
+                        p: 1,
+                        pt: 1,
+                        color: "white" }}>
+                        { currentUser.nickname.substring(0, 1).toUpperCase() }
+                      </Typography>
+                    </>
                   :
                   <Link to="/login" style={{ textDecoration: "none" }}>
                     <Button sx={{ color: "lightgray", borderColor: "gray", '&:hover': { borderColor: "white", color: "white" } }} variant="outlined">

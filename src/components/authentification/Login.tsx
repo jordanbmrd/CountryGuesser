@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Grid, Paper, Avatar, TextField, FormControlLabel, Checkbox, Button, Typography } from "@mui/material";
+import { Grid, Paper, Avatar, TextField, Button, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { BsFillLockFill } from "react-icons/bs";
 import { login } from "../../services/AuthService";

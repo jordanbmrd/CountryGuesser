@@ -1,37 +1,75 @@
-import { Button, Typography, Dialog, DialogContent, DialogActions } from "@mui/material";
+import { Typography, Dialog, DialogContent, Stack } from "@mui/material";
+import { useEffect, useState } from "react";
+import { GiTrophyCup } from "react-icons/gi";
+import { FaGamepad } from "react-icons/fa";
+import { RiEyeCloseFill } from "react-icons/ri";
+import { getPlayerStatistics } from "../../utils/statistics.utils";
 import DialogTitle from "./DialogTitle";
 
 const ProfileDialog = (props: ProfileDialogProps) => {
+  const [wonGames, setWonGames] = useState(0);
+  const [losedGames, setLosedGames] = useState(0);
+  const [playedGames, setPlayedGames] = useState(0);
+
+  useEffect(() => {
+    // Récupération des statistiques du joueur
+    getPlayerStatistics(props.currentUser).then(data => {
+      setWonGames(data.wonGames);
+      setPlayedGames(data.playedGames);
+      setLosedGames(data.losedGames); 
+    });
+  }, [props.currentUser]);
+
   return (
       <Dialog
         sx={{ p: 2 }}
         onClose={props.handleClose}
         open={props.open}
+        fullWidth
+        maxWidth="sm"
       >
         <DialogTitle onClose={props.handleClose}>
           Profil
         </DialogTitle>
         <DialogContent dividers>
-          <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
-          </Typography>
-          <Typography gutterBottom>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-            Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-          </Typography>
-          <Typography gutterBottom>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
-            magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
-            ullamcorper nulla non metus auctor fringilla.
-          </Typography>
+          <Stack justifyContent="center" alignItems="center" gap={5}>
+            <Stack direction="column" justifyContent="space-around" align-items="center">
+              <Stack
+              justifyContent="center"
+              alignItems="center"
+              sx={{
+                backgroundColor: "lightgray",
+                borderRadius: 50,
+                fontSize: "1.2rem",
+                width: 25,
+                height: 25,
+                p: 1,
+                pt: 1,
+                color: "white" }}>
+                  { props.currentUser.nickname.substring(0, 1).toUpperCase() }
+              </Stack>
+              <Typography fontWeight="bold" fontFamily={"Oswald, sans-serif"} fontSize={20}>
+                { props.currentUser.nickname }
+              </Typography>
+            </Stack>
+            <Stack direction="column" justifyContent="center">
+              <Stack direction="row" alignItems="center" gap={2}>
+                <GiTrophyCup color="yellow" fontSize={25} />
+                <Typography>{ wonGames } parties gagnées</Typography>
+              </Stack>
+
+              <Stack direction="row" alignItems="center" gap={2}>
+                <RiEyeCloseFill color="red" fontSize={25} />
+                <Typography>{ losedGames } parties perdues</Typography>
+              </Stack>
+
+              <Stack direction="row" alignItems="center" gap={2}>
+                <FaGamepad fontSize={25} />
+                <Typography>{ playedGames } parties jouées</Typography>
+              </Stack>
+            </Stack>
+          </Stack>
         </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={props.handleClose}>
-            Save changes
-          </Button>
-        </DialogActions>
       </Dialog>
   );
 }
@@ -39,6 +77,7 @@ const ProfileDialog = (props: ProfileDialogProps) => {
 interface ProfileDialogProps {
   handleClose: () => void;
   open: boolean;
+  currentUser: any;
 }
 
 export default ProfileDialog;
