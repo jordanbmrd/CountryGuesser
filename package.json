@@ -41,10 +41,17 @@
       "react-app/jest"
     ]
   },
-  "browserslist": [
-    "default",
-    "not ie 11"
-  ],
+  "browserslist": {
+    "production": [
+      "default",
+      "not ie 11"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "devDependencies": {
     "@types/mapbox-gl": "^2.7.8"
   }
