@@ -103,6 +103,7 @@ const Game = () => {
             code: data.code,
             latLng: data.latLng,
           });
+          console.log("settedMysteryCountry ::: ", {name: data.name, code: data.code});
           setLeftClues(3);
           break;
         case "wrongAnswer":
@@ -138,11 +139,11 @@ const Game = () => {
   const prepareMysteryCountry = (): void => {
     if (isMultiplayer()) {
       fetchRandomCountry().then(randomCountry => {
-        setMysteryCountry(randomCountry);
         sendMessage(JSON.stringify({
           type: "roundData",
           ...randomCountry,
         }));
+        console.log("mysteryCountry ::: ", randomCountry);
       });
     }
   }
@@ -168,6 +169,7 @@ const Game = () => {
         type: "playerResponse",
         playerResponse: selectedCountry.code,
       }));
+      console.log("response ::: ", selectedCountry);
     }
     else {
       if (selectedCountry.code === mysteryCountry.code) {
