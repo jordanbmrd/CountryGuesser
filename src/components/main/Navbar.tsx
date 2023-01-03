@@ -9,7 +9,7 @@ import ParametersDialog from "../user/ParametersDialog";
 
 const pages = [
     {
-        name: 'Règles',
+        name: 'Accueil',
         link: '/'
     },
     {
