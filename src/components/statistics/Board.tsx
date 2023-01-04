@@ -14,7 +14,7 @@ const Board = (props: BoardProps): JSX.Element => {
         <TableBody>
           {props.rows.slice(0, 10).map((row) => {
             const games_losed = row.games_played - row.games_won;
-            const ratio = (row.games_won / games_losed !== 0 ? games_losed : 1);  // Ratio Gain / Pertes
+            const ratio = (row.games_won / (games_losed !== 0 ? games_losed : 1));  // Ratio Gain / Pertes
 
             return (
             <TableRow
