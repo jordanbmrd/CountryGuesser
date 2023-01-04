@@ -213,12 +213,13 @@ const Game = () => {
       <LoadingBar visible={isLoading} />
 
       <Box
-      sx={{ height: "90vh", margin: "30px", borderRadius: 5, bgcolor: "white" }}
-      overflow="hidden"
+      sx={{ height: "90vh", margin: "30px", borderRadius: 5 }}
+      overflow={{ xs: "visible", md: "hidden" }}
+      bgcolor={{ xs: "transparent", md: "white" }}
       className={ shake ? 'shake' : '' }
       onAnimationEnd={() => setShake(false)}>
         <Stack
-        direction="row">
+        direction={{xs: "column", md: "row"}}>
           <Box mr={5}>
             <Map
             losedGame={losedGame}
