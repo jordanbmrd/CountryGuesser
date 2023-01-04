@@ -143,7 +143,6 @@ const Game = () => {
           type: "roundData",
           ...randomCountry,
         }));
-        console.log("mysteryCountry ::: ", randomCountry);
       });
     }
   }
@@ -169,7 +168,6 @@ const Game = () => {
         type: "playerResponse",
         playerResponse: selectedCountry.code,
       }));
-      console.log("response ::: ", selectedCountry);
     }
     else {
       if (selectedCountry.code === mysteryCountry.code) {

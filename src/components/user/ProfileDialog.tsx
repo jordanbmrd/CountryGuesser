@@ -33,7 +33,7 @@ const ProfileDialog = (props: ProfileDialogProps) => {
         </DialogTitle>
         <DialogContent dividers>
           <Stack justifyContent="center" alignItems="center" gap={5}>
-            <Stack direction="column" justifyContent="space-around" align-items="center">
+            <Stack direction="column" justifyContent="space-around" alignItems="center">
               <Stack
               justifyContent="center"
               alignItems="center"
