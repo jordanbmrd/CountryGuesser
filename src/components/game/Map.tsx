@@ -84,7 +84,7 @@ const Map = (props: MapProps) => {
             style: 'mapbox://styles/dorit75/clak5c76z005914o64jbe3you?optimize=true',
             center: [lng, lat],
             zoom,
-            accessToken: "pk.eyJ1IjoiZG9yaXQ3NSIsImEiOiJjbGFqdjU1bzYwZzBhM3NvMGJ0Z2M1a3F2In0.RddpBuye5jg57iGg25DQTA",
+            accessToken: process.env.REACT_APP_MAPBOX_TOKEN,
         });
 
         map.current.on('move', () => {

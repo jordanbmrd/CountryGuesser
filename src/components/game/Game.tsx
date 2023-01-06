@@ -65,7 +65,7 @@ const Game = () => {
 
   useEffect(() => {
     if (isMultiplayer() && currentUser.credential) {
-      setSocketUrl(`wss://ws.countryguesser.deletesystem32.fr?playerCredential=${ currentUser.credential }&roomSize=${ nbPlayers ? nbPlayers : "2" }&maxRounds=${ nbRounds ? nbRounds : "3" }`);
+      setSocketUrl(`wss://${process.env.REACT_APP_WEBSOCKET_URI}?playerCredential=${ currentUser.credential }&roomSize=${ nbPlayers ? nbPlayers : "2" }&maxRounds=${ nbRounds ? nbRounds : "3" }`);
     }
   }, [currentUser]);
 
@@ -103,7 +103,6 @@ const Game = () => {
             code: data.code,
             latLng: data.latLng,
           });
-          console.log("settedMysteryCountry ::: ", {name: data.name, code: data.code});
           setLeftClues(3);
           break;
         case "wrongAnswer":
