@@ -4,55 +4,45 @@
 
 🇬🇧 CountryGuesser is a game in which you have to find the country on the globe according to a randomly displayed flag. You have 3 usable clues. The game can be played alone or with others.
 
-## ⌨️ Stack
 
-Front :
+## Stack
+
+Frontend :
 
 - React TypeScript
-
 - Mapbox
-
 - Material UI<br/>
 
-Back :
+Backend :
 
-- PHP (Workerman pour les websockets)
+- PHP
+- Workerman for WebSocket
 
 
 ## APIs
 
   
 
-- [RESTCountries](https://restcountries.com/) : Récupérer les informations sur les pays
-
-- [Mapbox GeoCode API](https://developers.google.com/maps/documentation/geocoding/overview) : Obtenir le pays en fonction de ses coordonnées
+- [RESTCountries](https://restcountries.com/) : Get country data
+- [Mapbox GeoCode API](https://developers.google.com/maps/documentation/geocoding/overview) : Get country according to given coordinates
 
   
 
 ## Architecture
 
-  
+### Database Structure
+![Database Structure](./images/database.png)
 
-![Screenshot](./diagrammes/Architecture%20de%20l'application.png)
+### Backend Infrastructure
+![Backend Infrastructure](./images/infrastructure.png)
 
-  
-
-## Installation
-
-  
-
-`git clone <https://github.com/jordanbmrd/CountryGuesser.git>`<br/>
-`npm install`<br />
-`npm start`
+### Reverse Proxy Schema
+![Reverse Proxy Schema](./images/reverse-proxy.png)
 
   
 
 ## Collaborators
 
-  
-
-Jordan B.<br/>
-
-Pierre L.<br/>
-
-Charles H.<br/>
+* Jordan BAUMARD
+* Pierre LEOCADIE
+* Charles HURST
