@@ -1,0 +1,65 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-CountryGuesserDB}
+      MYSQL_USER: ${MYSQL_USER:-countryguesser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-countryguesser}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+      DB_USER: ${MYSQL_USER:-countryguesser}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-countryguesser}
+      DB_NAME: ${MYSQL_DATABASE:-CountryGuesserDB}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  websocket:
+    build:
+      context: ./websocket-server
+      dockerfile: Dockerfile
+    ports:
+      - "7777:7777"
+    environment:
+      API_URL: http://api:8000
+    depends_on:
+      - api
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      HOST: 0.0.0.0
+      CHOKIDAR_USEPOLLING: "true"
+      REACT_APP_API_URI: http://localhost:8000
+      REACT_APP_WEBSOCKET_URI: http://localhost:7777
+      REACT_APP_MAPBOX_TOKEN: ${REACT_APP_MAPBOX_TOKEN:-}
+    depends_on:
+      - api
+      - websocket
+    stdin_open: true
+    tty: true
+
+volumes:
+  mysql_data:

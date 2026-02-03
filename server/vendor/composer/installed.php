@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'country-guesser/country-guesser',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => NULL,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '24a042f910c4e7defa50ff5fb4a81d17a58235d4',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'country-guesser/country-guesser' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => NULL,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '24a042f910c4e7defa50ff5fb4a81d17a58235d4',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

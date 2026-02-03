@@ -1,5 +1,5 @@
 export const getPlayerStatistics = (currentUser: any): Promise<{ wonGames: number, playedGames: number, losedGames: number }> => {
-    return fetch(`https://${process.env.REACT_APP_API_URI}/player/getleaderboardstats`, {
+    return fetch(`${process.env.REACT_APP_API_URI}/player/getleaderboardstats`, {
       method: "POST",
       body: JSON.stringify({ player_id: currentUser.player_id })
     })

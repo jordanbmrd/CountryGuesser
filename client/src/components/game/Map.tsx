@@ -5,7 +5,7 @@ import { circle } from "@turf/turf";
 
 const displayCircle = (map: any, lat: number, lng: number, precision: number) => {
     // precision : 3 = Peu précis / 2 = Précis / 1 = Très précis
-    
+
     const idCircle = "circle-fill";
     const idOutline = "circle-outline";
     const center = [lng, lat];
@@ -13,7 +13,7 @@ const displayCircle = (map: any, lat: number, lng: number, precision: number) =>
         steps: 80,
     };
     let radius = 6500;
-    switch(precision) {
+    switch (precision) {
         case 2:
             radius = 3500;
             break;
@@ -76,15 +76,17 @@ const Map = (props: MapProps) => {
 
     const [, setTimerInterval] = useState<any>(null);
 
+    const mapboxToken = process.env.REACT_APP_MAPBOX_TOKEN;
+
     useEffect(() => {
-        if (map.current) return;
+        if (map.current || !mapboxToken) return;
 
         map.current = new Mapbox({
             container: mapContainer.current || "",
             style: 'mapbox://styles/dorit75/clak5c76z005914o64jbe3you?optimize=true',
             center: [lng, lat],
             zoom,
-            accessToken: process.env.REACT_APP_MAPBOX_TOKEN,
+            accessToken: mapboxToken,
         });
 
         map.current.on('move', () => {
@@ -95,21 +97,21 @@ const Map = (props: MapProps) => {
 
         map.current.on('click', (e: any) => {
             const { lat, lng } = e.lngLat;
-            fetch(`https://api.tiles.mapbox.com/v4/geocode/mapbox.places-country-v1/${lng},${lat}.json?access_token=pk.eyJ1IjoiZG9yaXQ3NSIsImEiOiJjbGFqdjU1bzYwZzBhM3NvMGJ0Z2M1a3F2In0.RddpBuye5jg57iGg25DQTA&language=fr`)
-            .then(data => data.json())
-            .then(data => {
-                const { place_name_fr, properties } = data.features[0];
-                new Popup()
-                    .setLngLat(e.lngLat.wrap())
-                    .setHTML(`<b>Votre choix :</b><br />${place_name_fr}`)
-                    .addTo(map.current);
+            fetch(`https://api.tiles.mapbox.com/v4/geocode/mapbox.places-country-v1/${lng},${lat}.json?access_token=${mapboxToken || ""}&language=fr`)
+                .then(data => data.json())
+                .then(data => {
+                    const { place_name_fr, properties } = data.features[0];
+                    new Popup()
+                        .setLngLat(e.lngLat.wrap())
+                        .setHTML(`<b>Votre choix :</b><br />${place_name_fr}`)
+                        .addTo(map.current);
 
-                props.setSelectedCountry({
-                    name: place_name_fr,
-                    code: properties.short_code.toUpperCase(),
+                    props.setSelectedCountry({
+                        name: place_name_fr,
+                        code: properties.short_code.toUpperCase(),
+                    });
+                    props.setCanValidate(true);
                 });
-                props.setCanValidate(true);
-            });
         });
 
         map.current.on('load', () => {
@@ -167,24 +169,29 @@ const Map = (props: MapProps) => {
         });
     }
 
-  return (
-    <Box sx={{ position: "relative", width: "70vw", height: "90vh" }}>
-        { props.leftClues > 0 &&
-            <Button
-            sx={{ position: "absolute", zIndex: 3, top: 0, left: 0, m: 3 }}
-            variant="contained"
-            onClick={handleClueClick}>
-                Utiliser un indice ({ props.leftClues } restant{ props.leftClues > 1 && 's'})
-            </Button>
-        }
-        { props.selectedCountry && props.selectedCountry.name && (
-            <Paper sx={{ p: 2, zIndex: 1, position: "absolute", bottom: 0, right: 0, margin: "0 24px 36px 0" }}>
-                Pays sélectionné : {props.selectedCountry.name}
-            </Paper>
-        )}
-        <div ref={mapContainer} style={{ width: "100%", height: "90vh" }} />
-    </Box>
-  );
+    return (
+        <Box sx={{ position: "relative", width: "70vw", height: "90vh" }}>
+            {props.leftClues > 0 &&
+                <Button
+                    sx={{ position: "absolute", zIndex: 3, top: 0, left: 0, m: 3 }}
+                    variant="contained"
+                    onClick={handleClueClick}>
+                    Utiliser un indice ({props.leftClues} restant{props.leftClues > 1 && 's'})
+                </Button>
+            }
+            {props.selectedCountry && props.selectedCountry.name && (
+                <Paper sx={{ p: 2, zIndex: 1, position: "absolute", bottom: 0, right: 0, margin: "0 24px 36px 0" }}>
+                    Pays sélectionné : {props.selectedCountry.name}
+                </Paper>
+            )}
+            {!mapboxToken && (
+                <Paper sx={{ p: 2, textAlign: "center", backgroundColor: "#fff3e0" }}>
+                    Token Mapbox manquant. Définissez <code>REACT_APP_MAPBOX_TOKEN</code> dans <code>client/.env</code>.
+                </Paper>
+            )}
+            <div ref={mapContainer} style={{ width: "100%", height: "90vh", display: mapboxToken ? "block" : "none" }} />
+        </Box>
+    );
 }
 
 interface MapProps {

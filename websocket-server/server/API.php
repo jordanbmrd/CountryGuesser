@@ -2,7 +2,12 @@
 
 class API
 {
-    private static string $rootUrl = "https://api.countryguesser.deletesystem32.fr"; 
+    private static string $rootUrl;
+
+    public function __construct()
+    {
+        self::$rootUrl = getenv('API_URL') ?: 'https://api.countryguesser.deletesystem32.fr';
+    } 
 
     public function createGame()
     {
@@ -208,7 +213,7 @@ class API
             "player_id" => $playerId
         );
         $dataToSend = json_encode($dataToSend);
-        $curl = curl_init($self::self::$rootUrlUrl . "/game/participants");
+        $curl = curl_init(self::$rootUrl . "/game/participants");
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_TIMEOUT, 10);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");

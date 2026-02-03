@@ -1,0 +1,48 @@
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+client/.env
+
+# Dependencies
+node_modules/
+client/node_modules/
+server/vendor/
+websocket-server/vendor/
+
+# Build & output
+client/build/
+dist/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE & editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PHP / Composer
+server/vendor/
+websocket-server/vendor/
+composer.lock
+# Keep composer.lock if you want reproducible installs; remove the line above to track it
+
+# Workerman
+*.pid
+websocket-server/vendor/workerman/workerman.log
+
+# Testing & coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Docker (optional)
+# docker-compose.override.yml

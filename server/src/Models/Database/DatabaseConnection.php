@@ -14,18 +14,23 @@ use PDO;
 class DatabaseConnection
 {
     private object $db;
-    private string $HOST = "HOST";
-    private string $USER = "USER";
-    private string $PASSWORD = "PASSWORD";
-    private string $DATABASE = "CountryGuesserDB";
+    private string $HOST;
+    private string $USER;
+    private string $PASSWORD;
+    private string $DATABASE;
     private string $ENCODING = "utf8";
 
     /**
         Constructor for the DatabaseConnection class
         This method creates a new PDO object for connecting to the database.
+        Uses getenv('DB_*') when set (e.g. Docker), otherwise fallback values.
     */
     public function __construct()
     {
+        $this->HOST = getenv('DB_HOST') ?: 'HOST';
+        $this->USER = getenv('DB_USER') ?: 'USER';
+        $this->PASSWORD = getenv('DB_PASSWORD') ?: 'PASSWORD';
+        $this->DATABASE = getenv('DB_NAME') ?: 'CountryGuesserDB';
         $this->db = new PDO("mysql:host=" . $this->HOST . ";dbname=" . $this->DATABASE . ";charset=" . $this->ENCODING, $this->USER, $this->PASSWORD);
     }
 

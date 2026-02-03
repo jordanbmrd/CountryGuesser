@@ -65,7 +65,15 @@ const Game = () => {
 
   useEffect(() => {
     if (isMultiplayer() && currentUser.credential) {
-      setSocketUrl(`wss://${process.env.REACT_APP_WEBSOCKET_URI}?playerCredential=${ currentUser.credential }&roomSize=${ nbPlayers ? nbPlayers : "2" }&maxRounds=${ nbRounds ? nbRounds : "3" }`);
+      const raw = (process.env.REACT_APP_WEBSOCKET_URI || "localhost:7777").trim();
+      const isSecure = /^https/i.test(raw);
+      const host = raw
+        .replace(/^https?:\/\//i, "")
+        .replace(/^https?\/+/i, "")
+        .replace(/\/+$/, "") || "localhost:7777";
+      const wsProtocol = isSecure ? "wss" : "ws";
+      const wsBase = `${wsProtocol}://${host}`;
+      setSocketUrl(`${wsBase}?playerCredential=${currentUser.credential}&roomSize=${nbPlayers ?? "2"}&maxRounds=${nbRounds ?? "3"}`);
     }
   }, [currentUser]);
 
@@ -147,16 +155,18 @@ const Game = () => {
   }
 
   const fetchRandomCountry = (): Promise<any> => {
-    return fetch("https://restcountries.com/v2/all/")
+    return fetch("https://restcountries.com/v3.1/all?fields=name,flags,cca2,latlng,translations")
     .then(data => data.json())
     .then(data => {
       const randomCountry = data[Math.floor(Math.random() * data.length)];
+      const name = randomCountry.translations?.fra?.common ?? randomCountry.translations?.fr?.common ?? randomCountry.name?.common ?? "";
+      const flag = randomCountry.flags?.png ?? randomCountry.flags?.svg ?? "";
 
       return {
-        name: randomCountry.translations.fr,
-        flag: randomCountry.flag,
-        code: randomCountry.alpha2Code.toUpperCase(),
-        latLng: randomCountry.latlng,
+        name,
+        flag,
+        code: randomCountry.cca2?.toUpperCase() ?? "",
+        latLng: randomCountry.latlng ?? [],
       };
     });
   }

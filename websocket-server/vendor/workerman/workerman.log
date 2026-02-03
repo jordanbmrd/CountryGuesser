@@ -2501,3 +2501,7 @@ Stack trace:
 2023-01-04 11:07:48 pid:20736 Workerman[server/server.php] start in DEBUG mode
 2023-01-04 11:07:53 pid:20736 Workerman[server.php] stopping ...
 2023-01-04 11:07:53 pid:20736 Workerman[server.php] has been stopped
+2026-02-03 15:44:24 pid:91361 Workerman[server/server.php] start in DEBUG mode
+2026-02-03 15:47:01 pid:91361 Workerman[server.php] stopping ...
+2026-02-03 15:47:01 pid:91361 worker[none:91371] exit with status 2
+2026-02-03 15:47:01 pid:91361 Workerman[server.php] has been stopped
