@@ -86,6 +86,32 @@ docker compose pull
 docker compose up -d
 ```
 
+### Construire des images Intel (linux/amd64)
+
+Si tu développes sur un Mac ARM (Apple Silicon) mais que tu veux **déployer sur une machine Intel**, il faut pousser des images **`linux/amd64`** (idéalement en **multi-arch** `amd64+arm64`).
+
+Le repo fournit un `docker-bake.hcl` pour faire ça proprement avec Buildx.
+
+#### Intel uniquement (amd64)
+
+```bash
+export IMAGE_PREFIX=7doritos
+export IMAGE_TAG=1.0.0
+export DOCKER_PLATFORMS=linux/amd64
+docker buildx create --use --name countryguesser || true
+docker buildx bake --push
+```
+
+#### Multi-arch (amd64 + arm64)
+
+```bash
+export IMAGE_PREFIX=7doritos
+export IMAGE_TAG=1.0.0
+export DOCKER_PLATFORMS=linux/amd64,linux/arm64
+docker buildx create --use --name countryguesser || true
+docker buildx bake --push
+```
+
 ## Collaborators
 
 * Jordan BAUMARD

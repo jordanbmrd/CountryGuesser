@@ -18,6 +18,11 @@ ENV REACT_APP_API_URI=${REACT_APP_API_URI}
 ENV REACT_APP_WEBSOCKET_URI=${REACT_APP_WEBSOCKET_URI}
 ENV REACT_APP_MAPBOX_TOKEN=${REACT_APP_MAPBOX_TOKEN}
 
+# Reduce build memory usage (useful for buildx/qemu on small Docker memory limits)
+ENV GENERATE_SOURCEMAP=false
+ENV DISABLE_ESLINT_PLUGIN=true
+ENV NODE_OPTIONS=--max_old_space_size=2048
+
 RUN npm run build
 
 ##
