@@ -97,7 +97,7 @@ const Game = () => {
         setErrorDialogVisible(true);
       }
 
-      switch(data.informationType) {
+      switch (data.informationType) {
         case "roomFull":  // Tous les joueurs trouvés
           setLaunchFoundPlayersAnimation(true);
           setTimeout(() => {
@@ -131,7 +131,7 @@ const Game = () => {
           break;
         case "gameOver":  // Fin de la partie
           setWinner(data.gameWinnerNickname);
-          if (data.gameWinnerNickname === currentUser.nickname) {  
+          if (data.gameWinnerNickname === currentUser.nickname) {
             setWinnerDialogVisible(true);
           }
           else {
@@ -156,19 +156,19 @@ const Game = () => {
 
   const fetchRandomCountry = (): Promise<any> => {
     return fetch("https://restcountries.com/v3.1/all?fields=name,flags,cca2,latlng,translations")
-    .then(data => data.json())
-    .then(data => {
-      const randomCountry = data[Math.floor(Math.random() * data.length)];
-      const name = randomCountry.translations?.fra?.common ?? randomCountry.translations?.fr?.common ?? randomCountry.name?.common ?? "";
-      const flag = randomCountry.flags?.png ?? randomCountry.flags?.svg ?? "";
+      .then(data => data.json())
+      .then(data => {
+        const randomCountry = data[Math.floor(Math.random() * data.length)];
+        const name = randomCountry.translations?.fra?.common ?? randomCountry.translations?.fr?.common ?? randomCountry.name?.common ?? "";
+        const flag = randomCountry.flags?.png ?? randomCountry.flags?.svg ?? "";
 
-      return {
-        name,
-        flag,
-        code: randomCountry.cca2?.toUpperCase() ?? "",
-        latLng: randomCountry.latlng ?? [],
-      };
-    });
+        return {
+          name,
+          flag,
+          code: randomCountry.cca2?.toUpperCase() ?? "",
+          latLng: randomCountry.latlng ?? [],
+        };
+      });
   }
 
   const handleValidateAnswer = () => {
@@ -206,92 +206,92 @@ const Game = () => {
   return foundPlayers || !isMultiplayer() ? (
     <>
       <ErrorDialog
-      open={errorDialogVisible}
-      onReplay={handleReplay} />
+        open={errorDialogVisible}
+        onReplay={handleReplay} />
       <WinnerDialog
-      open={winnerDialogVisible}
-      mysteryCountry={mysteryCountry}
-      errors={errors}
-      timer={timer}
-      onReplay={handleReplay} />
+        open={winnerDialogVisible}
+        mysteryCountry={mysteryCountry}
+        errors={errors}
+        timer={timer}
+        onReplay={handleReplay} />
       <LoserDialog
-      open={loserDialogVisible}
-      mysteryCountry={mysteryCountry}
-      onReplay={handleReplay}
-      winnerName={winner} />
+        open={loserDialogVisible}
+        mysteryCountry={mysteryCountry}
+        onReplay={handleReplay}
+        winnerName={winner} />
       <LoadingBar visible={isLoading} />
 
       <Box
-      sx={{ height: "90vh", margin: "30px", borderRadius: 5 }}
-      overflow={{ xs: "visible", md: "hidden" }}
-      bgcolor={{ xs: "transparent", md: "white" }}
-      className={ shake ? 'shake' : '' }
-      onAnimationEnd={() => setShake(false)}>
+        sx={{ height: "90vh", margin: "30px", borderRadius: 5 }}
+        overflow={{ xs: "visible", md: "hidden" }}
+        bgcolor={{ xs: "transparent", md: "white" }}
+        className={shake ? 'shake' : ''}
+        onAnimationEnd={() => setShake(false)}>
         <Stack
-        direction={{xs: "column", md: "row"}}>
+          direction={{ xs: "column", md: "row" }}>
           <Box mr={5}>
             <Map
-            losedGame={losedGame}
-            leftClues={leftClues}
-            mysteryCountry={mysteryCountry}
-            selectedCountry={selectedCountry}
-            setSelectedCountry={setSelectedCountry}
-            setCanValidate={setCanValidate}
-            setTimer={setTimer}
-            setLeftClues={setLeftClues}
-            onLoad={handleMapLoaded}
-            winnerDialogVisible={winnerDialogVisible}
-            setLoserDialogVisible={setLoserDialogVisible}
-            isMultiplayer={isMultiplayer()} />
+              losedGame={losedGame}
+              leftClues={leftClues}
+              mysteryCountry={mysteryCountry}
+              selectedCountry={selectedCountry}
+              setSelectedCountry={setSelectedCountry}
+              setCanValidate={setCanValidate}
+              setTimer={setTimer}
+              setLeftClues={setLeftClues}
+              onLoad={handleMapLoaded}
+              winnerDialogVisible={winnerDialogVisible}
+              setLoserDialogVisible={setLoserDialogVisible}
+              isMultiplayer={isMultiplayer()} />
           </Box>
           <Stack
-          pt={5}
-          direction="column"
-          justifyContent="space-between"
-          overflow="hidden">
+            pt={5}
+            direction="column"
+            justifyContent="space-between"
+            overflow="hidden">
             <Box>
               <Typography color="lightgray">À toi de jouer !</Typography>
               <Typography variant="h3">Drapeau à trouver</Typography>
               <Typography variant="h6">Temps : {secondsToTime(timer)}s</Typography>
-              { isMultiplayer() && parseInt(nbRounds ?? "3") > 1 && <Typography variant="h6">Tour : { roundCount } / { nbRounds ?? 3 }</Typography>  }
-              { errors ? <Typography variant="h6">Erreurs : {errors}</Typography> : null }
+              {isMultiplayer() && parseInt(nbRounds ?? "3") > 1 && <Typography variant="h6">Tour : {roundCount} / {nbRounds ?? 3}</Typography>}
+              {errors ? <Typography variant="h6">Erreurs : {errors}</Typography> : null}
             </Box>
 
-            { mysteryCountry.flag ? (
+            {mysteryCountry.flag ? (
               <Box>
                 <img
-                alt="Drapeau"
-                src={ mysteryCountry.flag }
-                style={{ width: "90%", border: "1px solid lightgray" }} />
+                  alt="Drapeau"
+                  src={mysteryCountry.flag}
+                  style={{ width: "90%", border: "1px solid lightgray" }} />
               </Box>
             ) : (
               <Loader />
             )}
 
             <Stack direction="column" alignItems="flex-end" mr={4}>
-              { selectedCountry.name && (
-                  <Alert severity="info">Vous êtes sur le point de valider votre réponse : <b>{ selectedCountry.name }</b></Alert>
+              {selectedCountry.name && (
+                <Alert severity="info">Vous êtes sur le point de valider votre réponse : <b>{selectedCountry.name}</b></Alert>
               )}
 
               <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-around"
-              flexWrap="wrap"
-              width="100%"
-              mt={2}
-              mb={5}>
-                { !isMultiplayer() &&
+                direction="row"
+                alignItems="center"
+                justifyContent="space-around"
+                flexWrap="wrap"
+                width="100%"
+                mt={2}
+                mb={5}>
+                {!isMultiplayer() &&
                   <Button
-                  variant="outlined"
-                  onClick={handleLeave}>
+                    variant="outlined"
+                    onClick={handleLeave}>
                     Abandonner
                   </Button>
                 }
                 <Button
-                variant="contained"
-                disabled={ !canValidate }
-                onClick={handleValidateAnswer}>Confirmer ma réponse</Button>
+                  variant="contained"
+                  disabled={!canValidate}
+                  onClick={handleValidateAnswer}>Confirmer ma réponse</Button>
               </Stack>
             </Stack>
           </Stack>

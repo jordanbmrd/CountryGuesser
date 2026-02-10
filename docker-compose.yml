@@ -51,9 +51,8 @@ services:
       - "3000:3000"
     environment:
       HOST: 0.0.0.0
-      CHOKIDAR_USEPOLLING: "true"
-      REACT_APP_API_URI: http://localhost:8000
-      REACT_APP_WEBSOCKET_URI: http://localhost:7777
+      REACT_APP_API_URI: http://api:8000
+      REACT_APP_WEBSOCKET_URI: http://websocket:7777
       REACT_APP_MAPBOX_TOKEN: ${REACT_APP_MAPBOX_TOKEN:-}
     depends_on:
       - api

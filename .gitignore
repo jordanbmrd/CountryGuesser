@@ -32,8 +32,6 @@ Thumbs.db
 # PHP / Composer
 server/vendor/
 websocket-server/vendor/
-composer.lock
-# Keep composer.lock if you want reproducible installs; remove the line above to track it
 
 # Workerman
 *.pid
