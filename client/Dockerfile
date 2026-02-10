@@ -1,19 +1,33 @@
-FROM node:18-alpine
+##
+## Build (immutable) - Create React App
+##
+FROM node:18-alpine AS build
 
 WORKDIR /app
 
-# Installer les dépendances
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-# Copier le code source
 COPY . .
 
-# Installer un serveur statique pour servir le build
-RUN npm install -g serve
+# Build-time env for CRA (baked into the bundle)
+ARG REACT_APP_API_URI
+ARG REACT_APP_WEBSOCKET_URI
+ARG REACT_APP_MAPBOX_TOKEN
+ENV REACT_APP_API_URI=${REACT_APP_API_URI}
+ENV REACT_APP_WEBSOCKET_URI=${REACT_APP_WEBSOCKET_URI}
+ENV REACT_APP_MAPBOX_TOKEN=${REACT_APP_MAPBOX_TOKEN}
 
-EXPOSE 3000
+RUN npm run build
 
-# En production : build puis servir les fichiers statiques
-# Les variables REACT_APP_* définies dans docker-compose seront lues au moment du build
-CMD ["sh", "-c", "npm run build && serve -s build -l 3000"]
+##
+## Runtime - Nginx serving static + reverse proxy to API/WS
+##
+FROM nginx:1.27-alpine
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/build /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

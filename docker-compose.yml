@@ -1,13 +1,15 @@
 services:
   db:
     image: mysql:8.0
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-CountryGuesserDB}
       MYSQL_USER: ${MYSQL_USER:-countryguesser}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-countryguesser}
-    ports:
-      - "3306:3306"
+    # Pas de port exposé par défaut (plus safe). Décommente si tu veux y accéder depuis ta machine.
+    # ports:
+    #   - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./database.sql:/docker-entrypoint-initdb.d/database.sql:ro
@@ -18,11 +20,14 @@ services:
       retries: 10
 
   api:
+    image: ${IMAGE_PREFIX:-countryguesser}/api:${IMAGE_TAG:-latest}
     build:
       context: ./server
       dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
+    restart: unless-stopped
+    # Pas de port exposé: l'accès se fait via le reverse-proxy Nginx du service client (/api/*)
+    # ports:
+    #   - "8000:8000"
     environment:
       DB_HOST: db
       DB_USER: ${MYSQL_USER:-countryguesser}
@@ -31,34 +36,55 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit((bool)@fsockopen('127.0.0.1', 8000) ? 0 : 1);"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
 
   websocket:
+    image: ${IMAGE_PREFIX:-countryguesser}/websocket:${IMAGE_TAG:-latest}
     build:
       context: ./websocket-server
       dockerfile: Dockerfile
-    ports:
-      - "7777:7777"
+    restart: unless-stopped
+    # Pas de port exposé: l'accès se fait via le reverse-proxy Nginx du service client (/ws)
+    # ports:
+    #   - "7777:7777"
     environment:
       API_URL: http://api:8000
     depends_on:
-      - api
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit((bool)@fsockopen('127.0.0.1', 7777) ? 0 : 1);"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
 
   client:
+    image: ${IMAGE_PREFIX:-countryguesser}/client:${IMAGE_TAG:-latest}
     build:
       context: ./client
       dockerfile: Dockerfile
+      args:
+        # Recommandé: proxy interne via Nginx (pas de hostname docker dans le navigateur)
+        REACT_APP_API_URI: ${REACT_APP_API_URI:-/api}
+        REACT_APP_WEBSOCKET_URI: ${REACT_APP_WEBSOCKET_URI:-/ws}
+        REACT_APP_MAPBOX_TOKEN: ${REACT_APP_MAPBOX_TOKEN:-}
     ports:
-      - "3000:3000"
-    environment:
-      HOST: 0.0.0.0
-      REACT_APP_API_URI: http://api:8000
-      REACT_APP_WEBSOCKET_URI: http://websocket:7777
-      REACT_APP_MAPBOX_TOKEN: ${REACT_APP_MAPBOX_TOKEN:-}
+      - "3000:80"
     depends_on:
-      - api
-      - websocket
-    stdin_open: true
-    tty: true
+      api:
+        condition: service_healthy
+      websocket:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
 
 volumes:
   mysql_data:

@@ -1,5 +1,8 @@
+import { getApiBase } from "./apiBase.utils";
+
 export const getPlayerStatistics = (currentUser: any): Promise<{ wonGames: number, playedGames: number, losedGames: number }> => {
-    return fetch(`${process.env.REACT_APP_API_URI}/player/getleaderboardstats`, {
+    const apiBase = getApiBase();
+    return fetch(`${apiBase}/player/getleaderboardstats`, {
       method: "POST",
       body: JSON.stringify({ player_id: currentUser.player_id })
     })

@@ -1,6 +1,9 @@
+import { getApiBase } from "../utils/apiBase.utils";
+
 // Connexion utilisateur
 export const login = async (nickname_email: string, password: string) => {
-    const response = await (await fetch(`${process.env.REACT_APP_API_URI}/login`, {
+    const apiBase = getApiBase();
+    const response = await (await fetch(`${apiBase}/login`, {
         method: "post",
         body: JSON.stringify({
             nickname_email,
@@ -16,7 +19,8 @@ export const login = async (nickname_email: string, password: string) => {
 
 // Création compte utilisateur
 export const register = async (nickname: string, email: string, password: string, password_confirmation: string) => {
-    const response = await (await fetch(`${process.env.REACT_APP_API_URI}/register`, {
+    const apiBase = getApiBase();
+    const response = await (await fetch(`${apiBase}/register`, {
         method: "post",
         body: JSON.stringify({
             nickname,

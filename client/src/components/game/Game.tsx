@@ -16,6 +16,31 @@ import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import { ReadyState } from "react-use-websocket";
 import { useSnackbar } from "notistack";
 
+const getWebsocketBaseUrl = (): string => {
+  const raw = (process.env.REACT_APP_WEBSOCKET_URI || "/ws").trim();
+  const wsProto = window.location.protocol === "https:" ? "wss" : "ws";
+
+  // Same-origin path (recommended with nginx reverse-proxy)
+  if (raw.startsWith("/")) {
+    const path = raw.replace(/\/+$/, "") || "/ws";
+    return `${wsProto}://${window.location.host}${path}`;
+  }
+
+  // Accept ws(s)://... directly
+  if (/^wss?:\/\//i.test(raw)) {
+    return raw.replace(/\/+$/, "");
+  }
+
+  // Accept http(s)://... and convert to ws(s)://...
+  if (/^https?:\/\//i.test(raw)) {
+    return raw.replace(/^https?:\/\//i, `${wsProto}://`).replace(/\/+$/, "");
+  }
+
+  // Fallback: treat as host[:port][/path]
+  const hostAndMaybePath = raw.replace(/\/+$/, "") || "localhost:7777";
+  return `${wsProto}://${hostAndMaybePath}`;
+};
+
 const Game = () => {
   const navigate = useNavigate();
   const { nbPlayers, nbRounds } = useParams();
@@ -65,14 +90,7 @@ const Game = () => {
 
   useEffect(() => {
     if (isMultiplayer() && currentUser.credential) {
-      const raw = (process.env.REACT_APP_WEBSOCKET_URI || "localhost:7777").trim();
-      const isSecure = /^https/i.test(raw);
-      const host = raw
-        .replace(/^https?:\/\//i, "")
-        .replace(/^https?\/+/i, "")
-        .replace(/\/+$/, "") || "localhost:7777";
-      const wsProtocol = isSecure ? "wss" : "ws";
-      const wsBase = `${wsProtocol}://${host}`;
+      const wsBase = getWebsocketBaseUrl();
       setSocketUrl(`${wsBase}?playerCredential=${currentUser.credential}&roomSize=${nbPlayers ?? "2"}&maxRounds=${nbRounds ?? "3"}`);
     }
   }, [currentUser]);

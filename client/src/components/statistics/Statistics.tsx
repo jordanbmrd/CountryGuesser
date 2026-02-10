@@ -10,6 +10,7 @@ import FabMenu from "../main/FabMenu";
 import UserContext from "../../services/UserContext";
 import { isAuthenticated } from "../../services/AuthService";
 import { getPlayerStatistics } from "../../utils/statistics.utils";
+import { getApiBase } from "../../utils/apiBase.utils";
 
 const Statistics = () => {
   const [wonGames, setWonGames] = useState(0);
@@ -20,7 +21,8 @@ const Statistics = () => {
   const [currentUser, setCurrentUser] = useContext(UserContext);
 
   const loadLeaderboard = () => {
-    fetch(`${process.env.REACT_APP_API_URI}/player/getleaderboard`)
+    const apiBase = getApiBase();
+    fetch(`${apiBase}/player/getleaderboard`)
     .then(data => data.json())
     .then(data => {
       setRows(data);
